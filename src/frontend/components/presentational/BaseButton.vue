@@ -12,4 +12,4 @@ setup(){
 });
 </script>
 
-<style></style>
+<style lang="scss"></style>

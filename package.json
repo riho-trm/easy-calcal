@@ -24,6 +24,7 @@
     "errorhandler": "^1.5.1",
     "express": "^4.17.3",
     "express-session": "^1.17.2",
+    "google-fonts-webpack-plugin": "^0.4.4",
     "lusca": "^1.7.0",
     "mysql": "^2.18.1",
     "nodemon": "^2.0.15",
