@@ -20,27 +20,15 @@ export default defineComponent({
     const clicked = () => {
       context.emit("button-clicked");
     };
+    return {
+      clicked,
+    };
   },
 });
 </script>
 
 <style scoped lang="scss">
-*,
-*:before,
-*:after {
-  -webkit-box-sizing: inherit;
-  box-sizing: inherit;
-}
-
-html {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  font-size: 62.5%; /*rem算出をしやすくするために*/
-}
-
-.btn,
-a.btn,
-button.btn {
+.btn {
   font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.5;
@@ -60,5 +48,18 @@ button.btn {
   letter-spacing: 0.1em;
   color: #212529;
   border-radius: 0.5rem;
+  border-color: #39587d;
+}
+.btn--orange {
+  color: #fff;
+  background-color: #39587d;
+}
+.btn--orange:hover {
+  color: #39587d;
+  background: #fff;
+}
+
+.btn--radius {
+  border-radius: 100vh;
 }
 </style>
