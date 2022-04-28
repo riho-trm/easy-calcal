@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <BaseButton :button-text="buttonText" @button-clicked="routeTo" />
-  </div>
+  <BaseButton :button-text="buttonText" @button-clicked="routeTo" />
 </template>
 
 <script lang="ts">

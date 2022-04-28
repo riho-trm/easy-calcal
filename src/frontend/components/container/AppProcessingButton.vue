@@ -1,5 +1,5 @@
 <template>
-  <BaseButton :button-text="buttonText" @button-clicked="cancel" />
+  <BaseButton :button-text="buttonText" @button-clicked="toProcess" />
 </template>
 
 <script lang="ts">
@@ -7,9 +7,7 @@ import { defineComponent } from "vue";
 import BaseButton from "../BaseButton.vue";
 
 export default defineComponent({
-  components: {
-    BaseButton,
-  },
+  components: { BaseButton },
   props: {
     buttonText: {
       type: String,
@@ -17,10 +15,10 @@ export default defineComponent({
     },
   },
   setup(props, context) {
-    const cancel = () => {
-      context.emit("close");
+    const toProcess = () => {
+      context.emit("processing");
     };
-    return { cancel };
+    return { toProcess };
   },
 });
 </script>
