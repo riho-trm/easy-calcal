@@ -1,12 +1,13 @@
 <template>
   <div>
-    <BaseButton :button-text="buttonText" />
+    <BaseButton :button-text="buttonText" @button-clicked="routeTo" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import BaseButton from "@/components/presentational/BaseButton.vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: { BaseButton },
@@ -20,8 +21,12 @@ export default defineComponent({
       require: true,
     },
   },
-  setup() {
-    return {};
+  setup(props) {
+    const router = useRouter();
+    const routeTo = () => {
+      router.push("/" + props.routing);
+    };
+    return { routeTo };
   },
 });
 </script>

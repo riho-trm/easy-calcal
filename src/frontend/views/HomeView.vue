@@ -2,7 +2,7 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-    <app-routing-button buttonText="押してみよう！" />
+    <app-routing-button buttonText="押してみよう！" routing="about" />
   </div>
 </template>
 
