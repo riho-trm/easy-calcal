@@ -18,15 +18,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-// 仮CSS
 .input-form {
-  border: 0;
-  padding: 10px;
-  font-size: 1.3em;
-  font-family: Arial, sans-serif;
-  color: #aaa;
-  border: solid 1px #ccc;
-  margin: 0 0 20px;
-  width: 300px;
+  background-color: #fff;
+  border: 1px solid #6f6f6f;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
 }
 </style>
