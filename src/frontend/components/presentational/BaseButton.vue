@@ -13,7 +13,6 @@ export default defineComponent({
   props: {
     buttonText: {
       type: String,
-      default: "PUSH",
     },
   },
   setup(props, context) {
