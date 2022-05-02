@@ -18,7 +18,7 @@ export default defineComponent({
     name: { type: String, repuired: true },
     type: { type: String, repuired: true },
     modelValue: { type: String, repuired: true },
-    placeholder: { type: String, required: true },
+    placeholder: { type: String },
   },
   emits: ["update:modelValue"],
 });
