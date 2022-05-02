@@ -1,13 +1,23 @@
 <template>
-  <div></div>
+  <label :for="id">
+    <slot />
+  </label>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-    return {};
+  props: {
+    id: {
+      type: String,
+      repuired: true,
+    },
+  },
+  setup(props) {
+    return {
+      props,
+    };
   },
 });
 </script>
