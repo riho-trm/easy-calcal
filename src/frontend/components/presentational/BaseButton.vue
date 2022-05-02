@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button type="button" class="btn btn--orange btn--radius" @click="clicked">
+    <button type="button" class="btn btn--color btn--radius" @click="clicked">
       {{ buttonText }}
     </button>
   </div>
@@ -49,15 +49,14 @@ export default defineComponent({
   border-radius: 0.5rem;
   border-color: #39587d;
 }
-.btn--orange {
+.btn--color {
   color: #fff;
   background-color: #39587d;
+  &:hover {
+    color: #39587d;
+    background: #fff;
+  }
 }
-.btn--orange:hover {
-  color: #39587d;
-  background: #fff;
-}
-
 .btn--radius {
   border-radius: 100vh;
 }
