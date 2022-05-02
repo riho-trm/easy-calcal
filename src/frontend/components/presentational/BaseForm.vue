@@ -1,8 +1,10 @@
 <template>
   <input
-    type="text"
     class="input-form"
+    :name="name"
+    :type="text"
     :value="modelValue"
+    :placeholder="placeholder"
     @input="$emit('update:modelValue', $event.target.value)"
   />
 </template>
@@ -12,7 +14,12 @@ import { defineComponent } from "vue";
 
 // 親コンポーネントに埋める際はinputのvalueを格納する変数を用意し、v-modelを設定する
 export default defineComponent({
-  props: ["modelValue"],
+  props: {
+    name: { type: String, repuired: true },
+    type: { type: String, repuired: true },
+    modelValue: { type: String, repuired: true },
+    placeholder: { type: String, required: true },
+  },
   emits: ["update:modelValue"],
 });
 </script>
