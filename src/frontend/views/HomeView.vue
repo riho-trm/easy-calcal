@@ -5,6 +5,7 @@
     <app-routing-button buttonText="押してみよう！" routing="about" />
     <BaseInput v-model="message" />
     <div>{{ message }}</div>
+    <BaseCheckBox name="" />
   </div>
 </template>
 
@@ -13,6 +14,7 @@ import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 // import BaseButton from "@/components/presentational/BaseButton.vue";
 import AppRoutingButton from "@/components/container/AppRoutingButton.vue";
 import BaseInput from "@/components/presentational/BaseInput.vue";
+import BaseCheckBox from "@/components/presentational/BaseCheckBox.vue";
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
