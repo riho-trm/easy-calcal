@@ -5,7 +5,12 @@
     <app-routing-button buttonText="押してみよう！" routing="about" />
     <BaseInput v-model="message" />
     <div>{{ message }}</div>
-    <BaseCheckBox name="" />
+    <BaseCheckBox
+      id="test-check-box1"
+      name="test-check-box1"
+      v-model="parrentCheckState"
+    />
+    <div>{{ parrentCheckState }}</div>
   </div>
 </template>
 
@@ -23,10 +28,12 @@ export default defineComponent({
     // BaseButton,
     AppRoutingButton,
     BaseInput,
+    BaseCheckBox,
   },
   setup() {
     let message = ref("");
-    return { message };
+    let parrentCheckState = ref(true);
+    return { message, parrentCheckState };
   },
 });
 </script>
