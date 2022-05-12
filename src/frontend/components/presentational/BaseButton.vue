@@ -13,6 +13,7 @@ export default defineComponent({
   props: {
     buttonText: {
       type: String,
+      required: true,
     },
   },
   setup(props, context) {
