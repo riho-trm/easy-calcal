@@ -16,5 +16,12 @@ module.exports = {
     "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off",
     // 型定義ファイル（types/index.d.ts）がundefinedになるのを防止
     "no-undef": "off",
+    // vueファイル名が単語になるのを許可（以下はLoginのみ許可している）
+    "vue/multi-word-component-names": [
+      "error",
+      {
+        ignores: ["Login"],
+      },
+    ],
   },
 };
