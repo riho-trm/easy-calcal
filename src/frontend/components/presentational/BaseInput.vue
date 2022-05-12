@@ -25,10 +25,10 @@ type InputAttr =
 // 親コンポーネントに埋める際はinputのvalueを格納する変数を用意し、v-modelを設定する
 export default defineComponent({
   props: {
-    id: { type: String, repuired: true },
-    name: { type: String, repuired: true },
-    type: { type: String as PropType<InputAttr>, repuired: true },
-    modelValue: { type: String, repuired: true },
+    id: { type: String, required: true },
+    name: { type: String, required: true },
+    type: { type: String as PropType<InputAttr>, required: true },
+    modelValue: { type: String, required: true },
     placeholder: { type: String },
   },
   emits: ["update:modelValue"],
