@@ -1,8 +1,9 @@
 <template>
   <input
     class="input-form"
+    :id="id"
     :name="name"
-    :type="text"
+    :type="type"
     :value="modelValue"
     :placeholder="placeholder"
     @input="$emit('update:modelValue', $event.target.value)"
@@ -10,15 +11,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
+import { defineComponent, PropType } from "vue";
+// input typeの型を指定
+type InputAttr =
+  | "text"
+  | "number"
+  | "email"
+  | "url"
+  | "password"
+  | "tel"
+  | "date"
+  | "time";
 // 親コンポーネントに埋める際はinputのvalueを格納する変数を用意し、v-modelを設定する
 export default defineComponent({
   props: {
+    id: { type: String, repuired: true },
     name: { type: String, repuired: true },
-    type: { type: String, repuired: true },
+    type: { type: String as PropType<InputAttr>, repuired: true },
     modelValue: { type: String, repuired: true },
-    placeholder: { type: String, required: true },
+    placeholder: { type: String },
   },
   emits: ["update:modelValue"],
 });
