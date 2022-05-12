@@ -40,6 +40,6 @@ export default defineComponent({
   background-color: #fff;
   border: 1px solid #6f6f6f;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  border-radius: 10px;
+  border-radius: 3px;
 }
 </style>
