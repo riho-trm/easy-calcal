@@ -2,7 +2,8 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png" />
     <HelloWorld msg="Welcome to Your Vue.js + TypeScript App" />
-    <app-routing-button buttonText="押してみよう！" routing="about" />
+    <app-routing-button buttonText="about" routing="about" />
+    <app-routing-button buttonText="login" routing="login" />
     <BaseInput v-model="message" />
     <div>{{ message }}</div>
     <BaseCheckBox

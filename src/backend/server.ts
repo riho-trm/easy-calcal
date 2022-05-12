@@ -2,9 +2,13 @@ import express from "express";
 import router from "./router";
 import path from "path";
 import mysql from "mysql";
+// historyモードでURL遷移を正しく行うためにインストール
+import history from "connect-history-api-fallback";
 
 const app = express();
-const port = 3000;
+// historyの使用
+app.use(history());
+const port = process.env.PORT || 3000;
 
 const connection = mysql.createConnection({
   host: "localhost",
