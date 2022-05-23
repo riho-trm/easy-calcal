@@ -1,12 +1,15 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Login from "../views/Login.vue";
-import LoginTest from "../views/LoginTest.vue";
+// import LoginTest from "../views/LoginTest.vue";
+import LoginView from "../views/LoginView.vue";
+import TopView from "../views/TopView.vue";
+import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "home",
+    name: "Home",
     component: HomeView,
   },
   {
@@ -20,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/login",
-    name: "login",
+    name: "Login",
     component: Login,
   },
   // {
@@ -28,11 +31,25 @@ const routes: Array<RouteRecordRaw> = [
   //   name: "loginTest",
   //   component: LoginTest,
   // },
+  {
+    path: "/topview",
+    name: "TopView",
+    component: TopView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/loginview",
+    name: "LoginView",
+    component: LoginView,
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
 });
+router.beforeEach(authorizeToken);
 
 export default router;
