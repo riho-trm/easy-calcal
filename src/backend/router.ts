@@ -1,5 +1,6 @@
 import express from "express";
 // import bodyParser from "body-parser";
+import jwt from "jsonwebtoken";
 
 const router: express.Router = express.Router();
 
@@ -11,6 +12,10 @@ router.get("/api/version", (req: express.Request, res: express.Response) => {
 });
 
 router.post("/api/hello", (req, res) => {
+  res.send(`ハロー、 ${req.body.userName}さん`);
+});
+
+router.post("/api/test", (req, res) => {
   res.send(`ハロー、 ${req.body.userName}さん`);
 });
 

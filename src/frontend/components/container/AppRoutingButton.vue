@@ -16,7 +16,7 @@ export default defineComponent({
     },
     routing: {
       type: String,
-      require: true,
+      required: true,
     },
   },
   setup(props) {

@@ -11,7 +11,7 @@ export default defineComponent({
   props: {
     id: {
       type: String,
-      repuired: true,
+      required: true,
     },
   },
   setup(props) {
