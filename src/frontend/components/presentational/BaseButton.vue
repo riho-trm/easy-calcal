@@ -47,12 +47,11 @@ export default defineComponent({
   text-decoration: none;
   letter-spacing: 0.1em;
   color: #212529;
-  border-radius: 0.5rem;
-  border-color: #39587d;
 }
 .btn--color {
   color: #fff;
   background-color: #39587d;
+  border: 2px solid #39587d;
   &:hover {
     color: #39587d;
     background: #fff;
