@@ -13,7 +13,7 @@ export default defineComponent({
       return this.$store
         .dispatch("logout")
         .then(() => {
-          this.$router.push("/loginview");
+          this.$router.push("/login");
         })
         .catch((error) => {
           throw error;

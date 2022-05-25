@@ -7,7 +7,7 @@ export const authorizeToken = (to: any, from: any, next: any) => {
     to.matched.some((page: any) => page.meta.requiresAuth) &&
     (store.state.auth.token === null || store.state.auth.token === undefined)
   ) {
-    next("/loginview");
+    next("/login");
   } else {
     next();
   }

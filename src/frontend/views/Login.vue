@@ -135,16 +135,20 @@ export default defineComponent({
       console.log(v$);
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
+      resErrorMessage.email = "";
+      resErrorMessage.password = "";
       handleLogin(state);
     };
     const handleLogin = async (authInfo: InputType) => {
       try {
         const res = await store.dispatch("login", authInfo);
-
-        if (res.data.message) {
-          resErrorMessage.email = res.data.message;
+        console.log(res);
+        if (res.status === "error") {
+          resErrorMessage.email = res.message.email;
+          resErrorMessage.password = res.message.password;
+        } else {
+          router.push({ path: "/topview" });
         }
-        router.push({ path: "/topview" });
       } catch (error) {
         console.log(error);
       }
