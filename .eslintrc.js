@@ -20,7 +20,7 @@ module.exports = {
     "vue/multi-word-component-names": [
       "error",
       {
-        ignores: ["Login"],
+        ignores: ["Login", "Header", "Footer"],
       },
     ],
   },
