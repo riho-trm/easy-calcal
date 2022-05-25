@@ -40,17 +40,30 @@ export default createStore({
           "http://localhost:3000/login/login",
           sendData
         );
-        console.log(res);
-        if (res.data.message) {
-          console.log(`エラーがあったよ${res.data.message}`);
-          console.dir(JSON.stringify(res.data));
-          return { error: res.data.message };
+        if (res.data.status === "error") {
+          return res.data;
         } else {
-          console.log("正常に処理されたよ");
           localStorage.setItem("token", res.data.token);
           context.commit("login", res.data);
-          console.log(res.data);
+          return res.data;
         }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    async register(context, data) {
+      try {
+        const sendData = {
+          email: data.email,
+          userName: data.userName,
+          password: data.password,
+          isadmin: false,
+        };
+        const res = await axios.post(
+          "http://localhost:3000/login/register",
+          sendData
+        );
+        return res.data;
       } catch (error) {
         console.log(error);
       }

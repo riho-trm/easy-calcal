@@ -64,14 +64,21 @@ router.post("/register", async (req, res) => {
         if (result.length >= 1) {
           console.log(result);
           res.json({
-            userNameError: "このユーザー名は使用されています",
-            emailError: "このメールアドレスは使用されています",
+            status: "error",
+            message: {
+              userName: "このユーザー名は使用されています",
+              email: "このメールアドレスは使用されています",
+            },
           });
         } else if (result.length === 0) {
           // ユーザー名重複
           console.log(result);
           res.json({
-            userNameError: "このユーザー名は使用されています",
+            status: "error",
+            message: {
+              userName: "このユーザー名は使用されています",
+              email: "",
+            },
           });
         }
       });
@@ -83,10 +90,14 @@ router.post("/register", async (req, res) => {
         if (result.length >= 1) {
           console.log(result);
           res.json({
-            emailError: "このメールアドレスは使用されています",
+            status: "error",
+            message: {
+              userName: "",
+              email: "このメールアドレスは使用されています",
+            },
           });
         } else if (result.length === 0) {
-          // 問題ないためユーザー登録処理
+          // 問題ないためユーザー登録処理,ログイン処理
           connection.query(
             registSql,
             [
@@ -95,7 +106,7 @@ router.post("/register", async (req, res) => {
               hashedPassword,
               req.body.isadmin,
             ],
-            function (err, result) {
+            (err, result) => {
               if (err) throw err;
               console.log(result);
               res.json(result);
@@ -113,12 +124,18 @@ router.post("/login", async (req, res) => {
     if (err) throw err;
     if (result.length === 0) {
       console.log("このアドレスは登録されていません");
-      res.json({ message: "このアドレスは登録されていません" });
+      res.json({
+        status: "error",
+        message: { email: "このアドレスは登録されていません", password: "" },
+      });
     } else {
       const match = await bcrypt.compare(req.body.password, result[0].password);
       if (!match) {
         console.log("パスワードが間違っています");
-        res.json({ message: "パスワードが間違っています" });
+        res.json({
+          status: "error",
+          message: { email: "", password: "パスワードが間違っています" },
+        });
       } else {
         const payload = {
           id: result[0].id,
@@ -128,6 +145,7 @@ router.post("/login", async (req, res) => {
         const token = jwt.sign(payload, secret);
         console.log(token);
         res.json({
+          status: "success",
           token,
           id: result[0].id,
           userName: result[0].user_name,

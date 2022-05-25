@@ -4,7 +4,7 @@ import Login from "../views/Login.vue";
 // import LoginTest from "../views/LoginTest.vue";
 import LoginView from "../views/LoginView.vue";
 import TopView from "../views/TopView.vue";
-import Header from "../components/Header.vue";
+import MembershipRegistration from "../views/MembershipRegistration.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
@@ -44,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/loginview",
     name: "LoginView",
     component: LoginView,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    component: MembershipRegistration,
   },
 ];
 
