@@ -4,7 +4,7 @@
       <h1 class="title-logo">title（仮）</h1>
     </div>
 
-    <div class="register-wrapper">
+    <!-- <div class="register-wrapper">
       <div class="register-form">
         <h2>新規登録</h2>
 
@@ -93,7 +93,7 @@
           buttonText="ログインはこちら"
         />
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -107,4 +107,17 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.container {
+  .title-wrapper {
+    width: 100%;
+    height: 80px;
+    display: flex;
+    .title-logo {
+      align-self: center;
+      font-size: 2rem;
+      padding-left: 1.2rem;
+    }
+  }
+}
+</style>
