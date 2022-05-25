@@ -71,9 +71,10 @@
           @processing="validateTest"
         />
         <hr />
-        <AppProcessingButton
+        <AppRoutingButton
           class="btn register-btn"
           buttonText="新規登録はこちら"
+          routing="register"
         />
       </div>
     </div>
@@ -85,6 +86,7 @@ import { defineComponent, reactive, ref, computed } from "vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required, email } from "@vuelidate/validators";
 import BaseInput from "@/components/presentational/BaseInput.vue";
+import AppRoutingButton from "@/components/container/AppRoutingButton.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
@@ -98,6 +100,7 @@ export default defineComponent({
   components: {
     BaseInput,
     AppProcessingButton,
+    AppRoutingButton,
   },
   setup() {
     const store = useStore();
@@ -170,6 +173,7 @@ export default defineComponent({
   width: 90%;
   margin: 0 auto;
   height: 80vh;
+  margin-top: 20px;
   .title-animation {
     width: 50%;
     margin-left: auto;
