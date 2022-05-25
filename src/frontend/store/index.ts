@@ -63,7 +63,7 @@ export default createStore({
           "http://localhost:3000/login/register",
           sendData
         );
-        console.log(res);
+        return res.data;
       } catch (error) {
         console.log(error);
       }

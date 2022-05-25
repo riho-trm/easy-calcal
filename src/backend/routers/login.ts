@@ -64,14 +64,21 @@ router.post("/register", async (req, res) => {
         if (result.length >= 1) {
           console.log(result);
           res.json({
-            userNameError: "このユーザー名は使用されています",
-            emailError: "このメールアドレスは使用されています",
+            status: "error",
+            message: {
+              userName: "このユーザー名は使用されています",
+              email: "このメールアドレスは使用されています",
+            },
           });
         } else if (result.length === 0) {
           // ユーザー名重複
           console.log(result);
           res.json({
-            userNameError: "このユーザー名は使用されています",
+            status: "error",
+            message: {
+              userName: "このユーザー名は使用されています",
+              email: "",
+            },
           });
         }
       });
@@ -83,10 +90,14 @@ router.post("/register", async (req, res) => {
         if (result.length >= 1) {
           console.log(result);
           res.json({
-            emailError: "このメールアドレスは使用されています",
+            status: "error",
+            message: {
+              userName: "",
+              email: "このメールアドレスは使用されています",
+            },
           });
         } else if (result.length === 0) {
-          // 問題ないためユーザー登録処理
+          // 問題ないためユーザー登録処理,ログイン処理
           connection.query(
             registSql,
             [
@@ -95,7 +106,7 @@ router.post("/register", async (req, res) => {
               hashedPassword,
               req.body.isadmin,
             ],
-            function (err, result) {
+            (err, result) => {
               if (err) throw err;
               console.log(result);
               res.json(result);
