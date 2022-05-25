@@ -40,6 +40,9 @@ const routes: Array<RouteRecordRaw> = [
     path: "/topmenu",
     name: "TopMenu",
     component: TopMenu,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
