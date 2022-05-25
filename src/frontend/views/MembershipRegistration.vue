@@ -171,7 +171,7 @@ export default defineComponent({
           if (loginRes.status === "error") {
             console.log(loginRes);
           } else {
-            router.push({ path: "/topview" });
+            router.push({ path: "/topmenu" });
           }
         }
       } catch (error) {
