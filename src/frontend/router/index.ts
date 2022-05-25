@@ -2,9 +2,9 @@ import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import Login from "../views/Login.vue";
 // import LoginTest from "../views/LoginTest.vue";
-import LoginView from "../views/LoginView.vue";
 import TopView from "../views/TopView.vue";
 import MembershipRegistration from "../views/MembershipRegistration.vue";
+import TopMenu from "../views/TopMenu.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
@@ -12,15 +12,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/",
     name: "Home",
     component: HomeView,
-  },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
     path: "/login",
@@ -41,14 +32,17 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/loginview",
-    name: "LoginView",
-    component: LoginView,
-  },
-  {
     path: "/register",
     name: "Register",
     component: MembershipRegistration,
+  },
+  {
+    path: "/topmenu",
+    name: "TopMenu",
+    component: TopMenu,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 

@@ -20,7 +20,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 footer {
-  min-height: 100vh;
+  // min-height: 100vh;
   position: relative;
   padding-bottom: 70px;
   box-sizing: border-box;
