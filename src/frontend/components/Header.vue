@@ -8,7 +8,7 @@
         <router-link to="/">カロリー計算</router-link>
         <router-link to="/">Myデータ</router-link>
         <router-link to="/">マイページ</router-link>
-        <router-link to="/" v-if="isAdmin === true">管理者メニュー</router-link>
+        <router-link to="/" v-if="isAdmin === 1">管理者メニュー</router-link>
       </div>
     </div>
   </header>

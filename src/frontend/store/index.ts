@@ -9,7 +9,7 @@ export default createStore({
       userId: -1,
       userName: "",
       email: "",
-      isAdmin: false,
+      isAdmin: 0, // 0:false,1:true
     },
   },
   getters: {},
@@ -26,7 +26,7 @@ export default createStore({
       state.auth.userId = -1;
       state.auth.userName = "";
       state.auth.email = "";
-      state.auth.isAdmin = false;
+      state.auth.isAdmin = 0;
     },
   },
   actions: {

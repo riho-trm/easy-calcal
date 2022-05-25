@@ -5,6 +5,7 @@ import Login from "../views/Login.vue";
 import TopView from "../views/TopView.vue";
 import MembershipRegistration from "../views/MembershipRegistration.vue";
 import TopMenu from "../views/TopMenu.vue";
+import AdminMenu from "../views/AdminMenu.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
@@ -43,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: "/adminmenu",
+    name: "AdminMenu",
+    component: AdminMenu,
   },
 ];
 
