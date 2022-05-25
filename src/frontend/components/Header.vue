@@ -33,6 +33,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 header {
+  position: sticky; /*固定する*/
+  position: -webkit-sticky; /*Safari用ベンダープレフィックス*/
+  top: 0;
+  z-index: 9999;
   width: 100%;
   height: 80px;
   background: rgba(255, 255, 255, 0.8);
