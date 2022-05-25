@@ -45,12 +45,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "LoginView",
     component: LoginView,
   },
-  // あとで消す
-  {
-    path: "/header",
-    name: "Header",
-    component: Header,
-  },
 ];
 
 const router = createRouter({

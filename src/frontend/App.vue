@@ -1,17 +1,28 @@
 <template>
-  <nav>
+  <!-- <nav>
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
-  </nav>
+  </nav> -->
+  <Header
+    v-if="
+      $route.path !== '/' &&
+      $route.path !== '/register' &&
+      $route.path !== '/login'
+    "
+  />
   <router-view />
+  <Footer v-if="$route.path !== '/register' && $route.path !== '/login'" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import "ress";
+import Header from "./components/Header.vue";
+import Footer from "./components/Footer.vue";
 
 // ressのimportのみだがexport defaultが必要
 export default defineComponent({
+  components: { Header, Footer },
   setup() {
     return {};
   },
@@ -29,6 +40,8 @@ export default defineComponent({
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   font-size: 62.5%; /*rem算出をしやすくするために*/
+  min-height: 100vh;
+  position: relative;
 }
 
 *,
