@@ -40,16 +40,11 @@ export default createStore({
           "http://localhost:3000/login/login",
           sendData
         );
-        console.log(res);
         if (res.data.status === "error") {
-          console.log(`エラーがあったよ${res.data.message}`);
-          console.dir(JSON.stringify(res.data));
           return res.data;
         } else {
-          console.log("正常に処理されたよ");
           localStorage.setItem("token", res.data.token);
           context.commit("login", res.data);
-          console.log(res.data);
           return res.data;
         }
       } catch (error) {
