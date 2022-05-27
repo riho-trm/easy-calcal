@@ -2,8 +2,16 @@ import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
 
+// リクエストヘッダーに含めるトークン
+const authHeader = {
+  headers: {
+    Authorization: `Bearer ${localStorage.getItem("token")}`,
+  },
+};
+
 export default createStore({
   state: {
+    // ログイン中のユーザー情報
     auth: {
       token: localStorage.getItem("token"),
       userId: -1,
@@ -11,9 +19,12 @@ export default createStore({
       email: "",
       isAdmin: 0, // 0:false,1:true
     },
+    // 栄養成分一覧
+    nutrients: {},
   },
   getters: {},
   mutations: {
+    // ログイン時にユーザー情報を格納
     login(state, payload) {
       state.auth.token = payload.token;
       state.auth.userId = payload.id;
@@ -21,6 +32,7 @@ export default createStore({
       state.auth.email = payload.email;
       state.auth.isAdmin = payload.isAdmin;
     },
+    // ログアウト時にユーザー情報を削除
     logout(state) {
       state.auth.token = null;
       state.auth.userId = -1;
@@ -28,8 +40,13 @@ export default createStore({
       state.auth.email = "";
       state.auth.isAdmin = 0;
     },
+    // 栄養成分一覧を格納
+    setNutrients(state, payload) {
+      state.nutrients = payload;
+    },
   },
   actions: {
+    // ログイン
     async login(context, data) {
       try {
         const sendData = {
@@ -45,6 +62,7 @@ export default createStore({
         } else {
           localStorage.setItem("token", res.data.token);
           context.commit("login", res.data);
+          context.dispatch("getNutrients");
           return res.data;
         }
       } catch (error) {
@@ -66,6 +84,20 @@ export default createStore({
         return res.data;
       } catch (error) {
         console.log(error);
+      }
+    },
+    async getNutrients(context) {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/nutrients/nutrientslist",
+          authHeader
+        );
+        console.log(res);
+        context.commit("setNutrients", res.data);
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log(errorMessage);
+        return error;
       }
     },
     logout(context) {

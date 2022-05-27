@@ -8,12 +8,15 @@ import mysql from "mysql";
 import history from "connect-history-api-fallback";
 // 非同期処理のなかで例外を投げるとエラーで落ちるので以下をインストール
 import domain from "express-domain-middleware";
+import cors from "cors";
+import { config } from "./config";
 
 const app = express();
 // historyの使用
 app.use(history());
 app.use(express.json());
 app.use(domain);
+app.use(cors());
 
 const port = process.env.PORT || 3000;
 const saltRounds = 10;
@@ -21,6 +24,10 @@ const saltRounds = 10;
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const loginRouter = require("./routers/login").default;
 app.use("/login", loginRouter);
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const nutrientsRouter = require("./routers/nutrients").default;
+app.use("/nutrients", nutrientsRouter);
 
 const connection = mysql.createConnection({
   host: "localhost",

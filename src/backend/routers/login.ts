@@ -2,6 +2,8 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import mysql from "mysql";
+import { config } from "../config";
+import { authenticate } from "../middlewares/authenticate";
 
 const router: express.Router = express.Router();
 router.use(express.json());
@@ -15,24 +17,22 @@ const connection = mysql.createConnection({
 
 // ハッシュ化のための回数
 const saltRounds = 10;
-// JWT作成のためのキー
-const secret = "foidsDWS82Svg";
 
 // Token確認用ミドルウェア
-const authenticate = async (req: any, res: any, next: any) => {
-  try {
-    const bearToken = await req.headers["authorization"];
-    const bearer = await bearToken.split(" ");
-    const token = await bearer[1];
+// const authenticate = async (req: any, res: any, next: any) => {
+//   try {
+//     const bearToken = await req.headers["authorization"];
+//     const bearer = await bearToken.split(" ");
+//     const token = await bearer[1];
 
-    const user = await jwt.verify(token, secret);
-    next();
-  } catch (err) {
-    res.sendStatus(403).json({
-      message: "Not authenticated",
-    });
-  }
-};
+//     const user = await jwt.verify(token, config.jwt.secret);
+//     next();
+//   } catch (err) {
+//     res.status(403).json({
+//       message: "Not authenticated",
+//     });
+//   }
+// };
 
 // テスト用
 router.get("/test", (req, res) => {
@@ -118,6 +118,7 @@ router.post("/register", async (req, res) => {
   });
 });
 
+// ログイン処理
 router.post("/login", async (req, res) => {
   const searchUserSql = "SELECT * FROM users WHERE mail_address=?";
   connection.query(searchUserSql, [req.body.email], async (err, result) => {
@@ -142,7 +143,10 @@ router.post("/login", async (req, res) => {
           userName: result[0].user_name,
           createdAt: result[0].created_at,
         };
-        const token = jwt.sign(payload, secret);
+        const token = jwt.sign(payload, config.jwt.secret, {
+          algorithm: "HS256",
+          expiresIn: "10m",
+        });
         console.log(token);
         res.json({
           status: "success",
@@ -154,6 +158,14 @@ router.post("/login", async (req, res) => {
         });
       }
     }
+  });
+});
+
+router.get("/nutrientslist", authenticate, (req, res) => {
+  const sql = "select * from nutrients";
+  connection.query(sql, function (err, result) {
+    if (err) throw err;
+    res.json(result);
   });
 });
 

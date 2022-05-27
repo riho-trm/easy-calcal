@@ -6,6 +6,7 @@ import TopView from "../views/TopView.vue";
 import MembershipRegistration from "../views/MembershipRegistration.vue";
 import TopMenu from "../views/TopMenu.vue";
 import AdminMenu from "../views/AdminMenu.vue";
+import RegisterEstimatedAmount from "../views/RegisterEstimatedAmount.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
@@ -49,6 +50,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/adminmenu",
     name: "AdminMenu",
     component: AdminMenu,
+  },
+  {
+    path: "/registerestimatedamount",
+    name: "RegisterEstimatedAmount",
+    component: RegisterEstimatedAmount,
   },
 ];
 
