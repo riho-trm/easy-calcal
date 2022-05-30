@@ -1,13 +1,10 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
+import { Nutrients } from "@/types/task";
 
 // リクエストヘッダーに含めるトークン
-const authHeader = {
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem("token")}`,
-  },
-};
+let authHeader = {};
 
 export default createStore({
   state: {
@@ -20,9 +17,17 @@ export default createStore({
       isAdmin: 0, // 0:false,1:true
     },
     // 栄養成分一覧
-    nutrients: {},
+    nutrients: {} as Nutrients,
   },
-  getters: {},
+  getters: {
+    getSugestList(state) {
+      const list = [];
+      for (const nutrient in state.nutrients) {
+        list.push(state.nutrients[nutrient].food_name);
+      }
+      return list;
+    },
+  },
   mutations: {
     // ログイン時にユーザー情報を格納
     login(state, payload) {
@@ -39,6 +44,7 @@ export default createStore({
       state.auth.userName = "";
       state.auth.email = "";
       state.auth.isAdmin = 0;
+      authHeader = {};
     },
     // 栄養成分一覧を格納
     setNutrients(state, payload) {
@@ -61,6 +67,11 @@ export default createStore({
           return res.data;
         } else {
           localStorage.setItem("token", res.data.token);
+          authHeader = {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          };
           context.commit("login", res.data);
           context.dispatch("getNutrients");
           return res.data;
@@ -97,6 +108,7 @@ export default createStore({
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log(errorMessage);
+        console.log(authHeader);
         return error;
       }
     },

@@ -7,11 +7,20 @@
       </div>
       <div class="food-name-form">
         <BaseLabel id="food-name">食材名（栄養成分表登録名）</BaseLabel>
-        <BaseInput
+        <SimpleTypeahead
           id="food-name-input"
-          name="food-name-input"
-          type="text"
           placeholder="食材名を検索"
+          :items="sugestItems"
+          :minInputLength="1"
+          @selectItem="selectItem"
+        />
+        <BaseInput
+          id="selected-food"
+          name="selected-food"
+          type="text"
+          placeholder="自動入力"
+          v-model="selectedItem"
+          disabled
         />
       </div>
     </div>
@@ -21,15 +30,37 @@
 <script lang="ts">
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import BaseLabel from "@/components/presentational/BaseLabel.vue";
-import { defineComponent } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { useStore } from "vuex";
+import SimpleTypeahead from "vue3-simple-typeahead";
 
 export default defineComponent({
-  components: { BaseLabel, BaseInput },
+  components: { BaseLabel, SimpleTypeahead, BaseInput },
   setup() {
     const store = useStore();
 
-    return {};
+    const state = reactive({
+      inputFood: "",
+    });
+    let sugestItems = reactive([]);
+    let selectedItem = ref("");
+
+    const created = () => {
+      sugestItems = store.getters.getSugestList;
+      console.log(sugestItems);
+    };
+    created();
+
+    const selectItem = (item: any) => {
+      selectedItem.value = item;
+    };
+
+    return {
+      state,
+      sugestItems,
+      selectedItem,
+      selectItem,
+    };
   },
 });
 </script>
