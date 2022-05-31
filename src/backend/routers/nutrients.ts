@@ -24,4 +24,25 @@ router.get("/nutrientslist", authenticate, (req, res) => {
   });
 });
 
+router.post("/registestimatedquantity", authenticate, (req, res) => {
+  const sql =
+    "INSERT INTO food_estimated_quantity (classification_id, nutrient_id, food_name_todisplay, unit, standard_quantity, include_disposal) VALUES (?,?,?,?,?,?)";
+  connection.query(
+    sql,
+    [
+      req.body.classificationId,
+      req.body.nutrientId,
+      req.body.foodNameTodisplay,
+      req.body.unit,
+      req.body.standardQuantity,
+      req.body.includeDisposal,
+    ],
+    (err, result) => {
+      if (err) throw err;
+      console.log(result);
+      res.json(result);
+    }
+  );
+});
+
 export default router;

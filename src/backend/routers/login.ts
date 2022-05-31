@@ -18,22 +18,6 @@ const connection = mysql.createConnection({
 // ハッシュ化のための回数
 const saltRounds = 10;
 
-// Token確認用ミドルウェア
-// const authenticate = async (req: any, res: any, next: any) => {
-//   try {
-//     const bearToken = await req.headers["authorization"];
-//     const bearer = await bearToken.split(" ");
-//     const token = await bearer[1];
-
-//     const user = await jwt.verify(token, config.jwt.secret);
-//     next();
-//   } catch (err) {
-//     res.status(403).json({
-//       message: "Not authenticated",
-//     });
-//   }
-// };
-
 // テスト用
 router.get("/test", (req, res) => {
   const sql = "select * from users";
