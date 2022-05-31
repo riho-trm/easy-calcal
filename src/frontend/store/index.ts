@@ -4,10 +4,16 @@ import axios from "axios";
 import { Nutrients } from "@/types/task";
 
 // リクエストヘッダーに含めるトークン
-let authHeader = {};
+// let authHeader = {};
 
 export default createStore({
   state: {
+    // リクエストヘッダーに含めるトークン
+    authHeader: {
+      headers: {
+        Authorization: ``,
+      },
+    },
     // ログイン中のユーザー情報
     auth: {
       token: localStorage.getItem("token"),
@@ -36,6 +42,11 @@ export default createStore({
       state.auth.userName = payload.userName;
       state.auth.email = payload.email;
       state.auth.isAdmin = payload.isAdmin;
+      state.authHeader = {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      };
     },
     // ログアウト時にユーザー情報を削除
     logout(state) {
@@ -44,7 +55,11 @@ export default createStore({
       state.auth.userName = "";
       state.auth.email = "";
       state.auth.isAdmin = 0;
-      authHeader = {};
+      state.authHeader = {
+        headers: {
+          Authorization: "",
+        },
+      };
     },
     // 栄養成分一覧を格納
     setNutrients(state, payload) {
@@ -67,16 +82,12 @@ export default createStore({
           return res.data;
         } else {
           localStorage.setItem("token", res.data.token);
-          authHeader = {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          };
           context.commit("login", res.data);
           context.dispatch("getNutrients");
           return res.data;
         }
       } catch (error) {
+        console.log("storeのloginのエラー");
         console.log(error);
       }
     },
@@ -98,17 +109,20 @@ export default createStore({
       }
     },
     async getNutrients(context) {
+      console.log(context.state.authHeader);
       try {
         const res = await axios.get(
           "http://localhost:3000/nutrients/nutrientslist",
-          authHeader
+          context.state.authHeader
         );
+        console.log("storeのgetNutrientsの成功res");
         console.log(res);
         context.commit("setNutrients", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
+        console.log("storeのgetNutrientsのエラー");
         console.log(errorMessage);
-        console.log(authHeader);
+        console.log(context.state.authHeader);
         return error;
       }
     },
@@ -128,12 +142,13 @@ export default createStore({
         const res = await axios.post(
           "http://localhost:3000/nutrients/registestimatedquantity",
           sendData,
-          authHeader
+          context.state.authHeader
         );
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
+        console.log("storeのsaveEstimatedQuantityのエラー");
         console.log(errorMessage);
-        console.log(authHeader);
+        console.log(context.state.authHeader);
         return error;
       }
     },
