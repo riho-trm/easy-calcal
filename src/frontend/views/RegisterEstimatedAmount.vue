@@ -23,6 +23,15 @@
           v-model="state.nutrientsListFoodName"
           disabled
         />
+        <div
+          class="input-errors"
+          v-for="(error, index) in v$.nutrientsListFoodName.$errors"
+          :key="index"
+        >
+          <div class="error-msg" v-if="error.$validator == 'required'">
+            入力してください
+          </div>
+        </div>
       </div>
       <div class="display-food-name-form">
         <BaseLabel id="display-food-name">食材名（表示用）</BaseLabel>
@@ -32,6 +41,15 @@
           type="text"
           v-model="state.toDisplayFoodName"
         />
+        <div
+          class="input-errors"
+          v-for="(error, index) in v$.toDisplayFoodName.$errors"
+          :key="index"
+        >
+          <div class="error-msg" v-if="error.$validator == 'required'">
+            入力してください
+          </div>
+        </div>
       </div>
       <div class="unit-form">
         <BaseLabel id="unit-name"
@@ -43,6 +61,15 @@
           type="text"
           v-model="state.unit"
         />
+        <div
+          class="input-errors"
+          v-for="(error, index) in v$.unit.$errors"
+          :key="index"
+        >
+          <div class="error-msg" v-if="error.$validator == 'required'">
+            入力してください
+          </div>
+        </div>
       </div>
       <div class="standard-quantity-form">
         <BaseLabel id="standard-quantity-name">単位あたりの量（g）</BaseLabel>
@@ -52,6 +79,21 @@
           type="text"
           v-model="state.standardQuantity"
         />
+        <div
+          class="input-errors"
+          v-for="(error, index) in v$.standardQuantity.$errors"
+          :key="index"
+        >
+          <div class="error-msg" v-if="error.$validator == 'required'">
+            入力してください
+          </div>
+          <div
+            class="error-msg"
+            v-if="error.$validator == 'fixedStandardQuantity'"
+          >
+            半角数字で入力してください
+          </div>
+        </div>
       </div>
       <div class="include-displsal-form">
         <BaseLabel id="include-displsal-name">廃棄率を含む</BaseLabel>
@@ -63,7 +105,7 @@
       </div>
       <div class="button">
         <AppCancelButton buttonText="キャンセル" />
-        <AppProcessingButton buttonText="保存" @processing="save" />
+        <AppProcessingButton buttonText="保存" @processing="validateTest" />
       </div>
     </div>
   </div>
@@ -75,7 +117,9 @@ import BaseLabel from "@/components/presentational/BaseLabel.vue";
 import BaseCheckbox from "@/components/presentational/BaseCheckBox.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
-import { defineComponent, reactive } from "vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
+import { defineComponent, reactive, computed } from "vue";
 import { useStore } from "vuex";
 import SimpleTypeahead from "vue3-simple-typeahead";
 
@@ -110,6 +154,34 @@ export default defineComponent({
       state.nutrientsListFoodName = item;
     };
 
+    const fixedStandardQuantity = (value: string) => {
+      const standardQuantityRegex = /^([1-9]\d*|0)(\.\d+)?$/;
+      if (value.length == 0) {
+        console.log("valueが0");
+        return true;
+      } else {
+        return standardQuantityRegex.test(value);
+      }
+    };
+
+    const rules = computed(() => ({
+      nutrientsListFoodName: { required },
+      toDisplayFoodName: { required },
+      unit: { required },
+      standardQuantity: {
+        required,
+        fixedStandardQuantity,
+      },
+    }));
+    const v$ = useVuelidate(rules, state);
+    const validateTest = async () => {
+      const isFormCorrect = await v$.value.$validate();
+      console.log(v$);
+      if (!isFormCorrect) return;
+      // バリデーションエラーじゃない場合にやりたい処理
+      console.dir(JSON.stringify(state));
+    };
+
     const save = () => {
       console.dir(JSON.stringify(state));
     };
@@ -117,6 +189,8 @@ export default defineComponent({
     return {
       state,
       sugestItems,
+      v$,
+      validateTest,
       selectItem,
       save,
     };
@@ -149,6 +223,10 @@ export default defineComponent({
     margin-left: auto;
     margin-right: auto;
     height: 100vh;
+    .error-msg {
+      color: red;
+      font-size: 0.8rem;
+    }
     .page-title {
       display: flex;
       padding: 2rem 2rem;
