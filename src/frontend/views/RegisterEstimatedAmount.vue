@@ -27,17 +27,19 @@
       <div class="display-food-name-form">
         <BaseLabel id="display-food-name">食材名（表示用）</BaseLabel>
         <BaseInput
-          id="display-food-name-input"
-          name="display-food-name-input"
+          id="display-food-name"
+          name="display-food-name"
           type="text"
           v-model="state.toDisplayFoodName"
         />
       </div>
       <div class="unit-form">
-        <BaseLabel id="unit-name">単位（例:大さじ、個etc）</BaseLabel>
+        <BaseLabel id="unit-name"
+          >単位（例:大さじ、個etc、数量は1固定）</BaseLabel
+        >
         <BaseInput
-          id="unit-input"
-          name="unit-input"
+          id="unit-name"
+          name="unit-name"
           type="text"
           v-model="state.unit"
         />
@@ -45,8 +47,8 @@
       <div class="standard-quantity-form">
         <BaseLabel id="standard-quantity-name">単位あたりの量（g）</BaseLabel>
         <BaseInput
-          id="standard-quantity-input"
-          name="standard-quantity-input"
+          id="standard-quantity-name"
+          name="standard-quantity-name"
           type="text"
           v-model="state.standardQuantity"
         />
@@ -54,8 +56,8 @@
       <div class="include-displsal-form">
         <BaseLabel id="include-displsal-name">廃棄率を含む</BaseLabel>
         <BaseCheckbox
-          id="include-display-box"
-          name="include-display-box"
+          id="include-display-name"
+          name="include-display-name"
           v-model:modelValue="state.includeDisposal"
         />
       </div>
@@ -122,4 +124,104 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(label) {
+  font-size: 1rem;
+  font-weight: 450;
+  padding: 1rem 5rem;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+:deep(.input-form) {
+  width: 50%;
+  height: 35px;
+  border: 1px solid #dcdcdc;
+  font-size: 150%;
+}
+
+.top-wrapper {
+  background-color: #f0f9ff;
+  min-height: 100vh;
+  .container {
+    width: 90%;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100vh;
+    .page-title {
+      display: flex;
+      padding: 2rem 2rem;
+      justify-content: space-around;
+      .title {
+        font-size: 2rem;
+        font-weight: 500;
+      }
+      p {
+        font-size: 1.3rem;
+        display: flex;
+        align-items: center;
+      }
+    }
+    .food-name-form {
+      :deep(.simple-typeahead) {
+        position: relative;
+        .simple-typeahead-input {
+          width: 50%;
+          height: 35px;
+          border: 1px solid #dcdcdc;
+          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+          border-radius: 3px;
+          margin-bottom: 1rem;
+          font-size: 150%;
+        }
+        .simple-typeahead-list {
+          position: absolute;
+          top: 35px;
+          left: 25%;
+          width: 50%;
+          max-height: 400px;
+          overflow-y: auto;
+          border-bottom: 0.1rem solid #d1d1d1;
+          z-index: 9;
+          margin-left: auto;
+          margin-right: auto;
+          .simple-typeahead-list-item {
+            cursor: pointer;
+            border-bottom: 0.1rem solid #d1d1d1;
+            background-color: #fafafa;
+            padding: 0.6rem 1rem;
+            border-left: 0.1rem solid #d1d1d1;
+            border-right: 0.1rem solid #d1d1d1;
+          }
+          .simple-typeahead-list-item-active {
+            background-color: #e1e1e1;
+          }
+        }
+      }
+      :deep(#selected-food) {
+        background-color: #bcbbbb;
+      }
+    }
+    .include-displsal-form {
+      :deep(#include-display-name) {
+        transform: scale(2);
+      }
+    }
+    .button {
+      width: 60%;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: center;
+      padding: 0;
+      padding: 2rem 0;
+      :deep(.btn) {
+        font-size: 1rem;
+        padding: 0.5rem 2rem;
+        margin: 0 1rem;
+      }
+    }
+  }
+}
+</style>
