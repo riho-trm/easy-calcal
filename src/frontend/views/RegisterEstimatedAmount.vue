@@ -179,11 +179,12 @@ export default defineComponent({
       console.log(v$);
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
-      console.dir(JSON.stringify(state));
+      save(state);
     };
 
-    const save = () => {
-      console.dir(JSON.stringify(state));
+    const save = async (data: any) => {
+      const res = await store.dispatch("saveEstimatedQuantity", data);
+      console.dir(JSON.stringify(res));
     };
 
     return {
