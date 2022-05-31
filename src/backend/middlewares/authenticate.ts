@@ -3,6 +3,7 @@ import { config } from "../config";
 
 export const authenticate = (req: any, res: any, next: any) => {
   const authHeader = req.headers["authorization"];
+  console.log("サーバーのauthenticateのheader表示");
   console.log(authHeader);
   const token = authHeader && authHeader.split(" ")[1];
 

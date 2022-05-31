@@ -131,6 +131,7 @@ router.post("/login", async (req, res) => {
           algorithm: "HS256",
           expiresIn: "10m",
         });
+        console.log("サーバーのloginの成功時のトークン表示");
         console.log(token);
         res.json({
           status: "success",
