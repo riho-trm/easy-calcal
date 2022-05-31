@@ -112,6 +112,31 @@ export default createStore({
         return error;
       }
     },
+    async saveEstimatedQuantity(context, data) {
+      const targetNutrient = context.state.nutrients.find(
+        (n) => n.food_name === data.nutrientsListFoodName
+      );
+      const sendData = {
+        classificationId: targetNutrient.classification_id,
+        nutrientId: targetNutrient.id,
+        foodNameTodisplay: data.toDisplayFoodName,
+        unit: data.unit,
+        standardQuantity: data.standardQuantity,
+        includeDisposal: data.includeDisposal,
+      };
+      try {
+        const res = await axios.post(
+          "http://localhost:3000/nutrients/registestimatedquantity",
+          sendData,
+          authHeader
+        );
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log(errorMessage);
+        console.log(authHeader);
+        return error;
+      }
+    },
     logout(context) {
       localStorage.removeItem("token");
       context.commit("logout");

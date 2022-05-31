@@ -1,4 +1,5 @@
 export interface Nutrients {
+  find(arg0: (n: any) => any);
   [key: number]: {
     id?: number;
     classification_id?: number;
