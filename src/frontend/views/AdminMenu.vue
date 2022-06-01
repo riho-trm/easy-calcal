@@ -5,13 +5,13 @@
       <AppRoutingButton
         class="btn registered-estimated-amount-btn"
         buttonText="登録済目安量一覧"
-        routing="registeredestimatedamount"
+        routing="estimatedamountlist"
       />
       <br />
       <AppRoutingButton
         class="btn estimated-amount-list-btn"
-        buttonText="目安量一覧"
-        routing="estimatedamountlist"
+        buttonText="目安量登録"
+        routing="registerestimatedamount"
       />
     </div>
   </div>
