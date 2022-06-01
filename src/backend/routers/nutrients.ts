@@ -56,4 +56,14 @@ router.get("/estimatedquantitylist", authenticate, (req, res) => {
   });
 });
 
+router.delete("/deleteestimatedquantity", authenticate, (req, res) => {
+  const sql = "delete from food_estimated_quantity WHERE id=?";
+  connection.query(sql, [req.body.id], function (err, result) {
+    if (err) {
+      throw err;
+    }
+    res.json({ status: "success" });
+  });
+});
+
 export default router;
