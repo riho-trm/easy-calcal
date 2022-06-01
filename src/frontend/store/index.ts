@@ -173,6 +173,28 @@ export default createStore({
         return error;
       }
     },
+    // 登録済目安量削除
+    async deleteEstimatedQuantity(context, id) {
+      try {
+        const res = await axios.delete(
+          "http://localhost:3000/nutrients/deleteestimatedquantity",
+          // deleteメソッドでは引数を3つ取れないのでこの形で渡す
+          {
+            data: { id },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log("storeのdeleteEstimatedQuantityのエラー");
+        console.log(errorMessage);
+        console.log(context.state.authHeader);
+        return error;
+      }
+    },
 
     // ログアウト
     logout(context) {

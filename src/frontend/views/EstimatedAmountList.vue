@@ -23,7 +23,7 @@
           <tr class="esitimated-amount" v-for="state in states" :key="state.id">
             <td>
               <div><fa icon="pen" /></div>
-              <div><fa icon="trash-can" /></div>
+              <div @click="showModal(state.id)"><fa icon="trash-can" /></div>
             </td>
             <td>{{ state.id }}</td>
             <td>{{ state.classificationId }}</td>
@@ -39,22 +39,38 @@
         </table>
       </div>
     </div>
+    <div class="delete-modal">
+      <ConfirmationModal
+        :isVisible="modalVisible"
+        message="削除してよろしいですか？"
+        @cancel="closeModal"
+        @processing="deleteData(deleteId)"
+      />
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { useStore } from "vuex";
+import axios from "axios";
+import ConfirmationModal from "@/components/ConfirmationModal.vue";
 
 export default defineComponent({
+  components: {
+    ConfirmationModal,
+  },
   setup() {
     const store = useStore();
 
     let states = reactive([{}]);
+    let modalVisible = ref(false);
+    let deleteId = ref(-1);
+
     const created = async () => {
+      states.splice(0);
       try {
         const res = await store.dispatch("getEstimatedQuantity");
-        states.splice(0, 1);
         for (const data of res) {
           const targetNutrient = await store.state.nutrients.find(
             (n: any) => n.id === data.nutrient_id
@@ -72,14 +88,39 @@ export default defineComponent({
             updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
           });
         }
-        console.log(states);
       } catch (error) {
         console.log(error);
       }
     };
     created();
+
+    const showModal = (id: number) => {
+      modalVisible.value = true;
+      deleteId.value = id;
+    };
+    const closeModal = () => {
+      modalVisible.value = false;
+      deleteId.value = -1;
+    };
+
+    const deleteData = async (id: any) => {
+      try {
+        const res = await store.dispatch("deleteEstimatedQuantity", id);
+        closeModal();
+        created();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     return {
       states,
+      modalVisible,
+      deleteId,
+      created,
+      showModal,
+      closeModal,
+      deleteData,
     };
   },
 });
