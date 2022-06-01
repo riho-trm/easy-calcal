@@ -46,7 +46,7 @@ router.post("/registestimatedquantity", authenticate, (req, res) => {
   );
 });
 
-router.get("estimatedquantitylist", authenticate, (req, res) => {
+router.get("/estimatedquantitylist", authenticate, (req, res) => {
   const sql = "select * from food_estimated_quantity";
   connection.query(sql, function (err, result) {
     if (err) {
