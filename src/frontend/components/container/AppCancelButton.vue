@@ -18,7 +18,7 @@ export default defineComponent({
   },
   setup(props, context) {
     const cancel = () => {
-      context.emit("close");
+      context.emit("cancel");
     };
     return { cancel };
   },

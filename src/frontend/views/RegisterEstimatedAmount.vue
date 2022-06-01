@@ -104,9 +104,17 @@
         />
       </div>
       <div class="button">
-        <AppCancelButton buttonText="キャンセル" />
+        <AppCancelButton buttonText="キャンセル" @cancel="showModal" />
         <AppProcessingButton buttonText="保存" @processing="validateTest" />
       </div>
+    </div>
+    <div>
+      <ConfirmationModal
+        :isVisible="modalVisible"
+        message="編集内容が破棄されますがよろしいですか？"
+        @cancel="closeModal"
+        @processing="backPage"
+      />
     </div>
   </div>
 </template>
@@ -117,11 +125,13 @@ import BaseLabel from "@/components/presentational/BaseLabel.vue";
 import BaseCheckbox from "@/components/presentational/BaseCheckBox.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
+import ConfirmationModal from "@/components/ConfirmationModal.vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { defineComponent, reactive, computed } from "vue";
+import { defineComponent, reactive, ref, computed } from "vue";
 import { useStore } from "vuex";
 import SimpleTypeahead from "vue3-simple-typeahead";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -131,9 +141,11 @@ export default defineComponent({
     BaseCheckbox,
     AppCancelButton,
     AppProcessingButton,
+    ConfirmationModal,
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     const state = reactive({
       nutrientsListFoodName: "",
@@ -143,6 +155,7 @@ export default defineComponent({
       includeDisposal: false,
     });
     let sugestItems = reactive([]);
+    let modalVisible = ref(false);
 
     const created = () => {
       sugestItems = store.getters.getSugestList;
@@ -176,24 +189,43 @@ export default defineComponent({
     const v$ = useVuelidate(rules, state);
     const validateTest = async () => {
       const isFormCorrect = await v$.value.$validate();
-      console.log(v$);
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
       save(state);
     };
 
     const save = async (data: any) => {
-      const res = await store.dispatch("saveEstimatedQuantity", data);
-      console.dir(JSON.stringify(res));
+      try {
+        const res = await store.dispatch("saveEstimatedQuantity", data);
+        console.dir(JSON.stringify(res));
+        router.push("/adminmenu");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const showModal = () => {
+      modalVisible.value = true;
+    };
+    const closeModal = () => {
+      modalVisible.value = false;
+    };
+
+    const backPage = () => {
+      router.push("/adminmenu");
     };
 
     return {
       state,
       sugestItems,
+      modalVisible,
       v$,
       validateTest,
       selectItem,
       save,
+      showModal,
+      closeModal,
+      backPage,
     };
   },
 });
