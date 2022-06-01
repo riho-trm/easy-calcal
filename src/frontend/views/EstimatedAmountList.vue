@@ -6,7 +6,7 @@
       </div>
       <div class="table-list">
         <table>
-          <tr>
+          <tr class="table-title">
             <th></th>
             <th>ID</th>
             <th>分類ID</th>
@@ -21,7 +21,7 @@
           </tr>
 
           <tr class="esitimated-amount" v-for="state in states" :key="state.id">
-            <td>
+            <td class="icon-btn">
               <div><fa icon="pen" /></div>
               <div @click="showModal(state.id)"><fa icon="trash-can" /></div>
             </td>
@@ -126,4 +126,41 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.top-wrapper {
+  background-color: #f0f9ff;
+  min-height: 100vh;
+  .container {
+    width: 90%;
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100vh;
+    .page-title {
+      padding: 2rem 2rem;
+      .title {
+        font-size: 2rem;
+        font-weight: 500;
+      }
+    }
+    .table-list {
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 1rem;
+        .table-title {
+          border-bottom: 0.1rem solid #d1d1d1;
+        }
+        .icon-btn {
+          display: flex;
+          height: 60px;
+          align-items: center;
+        }
+      }
+    }
+  }
+}
+</style>
