@@ -22,7 +22,7 @@
 
           <tr class="esitimated-amount" v-for="state in states" :key="state.id">
             <td class="icon-btn">
-              <div><fa icon="pen" /></div>
+              <div @click="routeEditData(state.id)"><fa icon="pen" /></div>
               <div @click="showModal(state.id)"><fa icon="trash-can" /></div>
             </td>
             <td>{{ state.id }}</td>
@@ -44,7 +44,7 @@
         :isVisible="modalVisible"
         message="削除してよろしいですか？"
         @cancel="closeModal"
-        @processing="deleteData(deleteId)"
+        @processing="deleteData(targetId)"
       />
     </div>
   </div>
@@ -53,8 +53,8 @@
 <script lang="ts">
 import { defineComponent, reactive, ref } from "vue";
 import { useStore } from "vuex";
-import axios from "axios";
 import ConfirmationModal from "@/components/ConfirmationModal.vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -62,12 +62,14 @@ export default defineComponent({
   },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     let states = reactive([{}]);
     let modalVisible = ref(false);
-    let deleteId = ref(-1);
+    let targetId = ref(-1);
 
     const created = async () => {
+      // statesのデータ全削除
       states.splice(0);
       try {
         const res = await store.dispatch("getEstimatedQuantity");
@@ -96,11 +98,11 @@ export default defineComponent({
 
     const showModal = (id: number) => {
       modalVisible.value = true;
-      deleteId.value = id;
+      targetId.value = id;
     };
     const closeModal = () => {
       modalVisible.value = false;
-      deleteId.value = -1;
+      targetId.value = -1;
     };
 
     const deleteData = async (id: any) => {
@@ -112,15 +114,19 @@ export default defineComponent({
         console.log(error);
       }
     };
+    const routeEditData = (id: number) => {
+      router.push({ path: `/editestimatedamount/${id}` });
+    };
 
     return {
       states,
       modalVisible,
-      deleteId,
+      targetId,
       created,
       showModal,
       closeModal,
       deleteData,
+      routeEditData,
     };
   },
 });
