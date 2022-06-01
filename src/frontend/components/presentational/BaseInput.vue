@@ -28,7 +28,7 @@ export default defineComponent({
     id: { type: String, required: true },
     name: { type: String, required: true },
     type: { type: String as PropType<InputAttr>, required: true },
-    modelValue: { type: String, required: true },
+    modelValue: { type: [String, Number] },
     placeholder: { type: String },
   },
   emits: ["update:modelValue"],

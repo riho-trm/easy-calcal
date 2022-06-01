@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import BaseButton from "../BaseButton.vue";
+import BaseButton from "../presentational/BaseButton.vue";
 
 export default defineComponent({
   components: {
@@ -18,7 +18,7 @@ export default defineComponent({
   },
   setup(props, context) {
     const cancel = () => {
-      context.emit("close");
+      context.emit("cancel");
     };
     return { cancel };
   },
