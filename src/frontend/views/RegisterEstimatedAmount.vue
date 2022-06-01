@@ -108,7 +108,7 @@
         <AppProcessingButton buttonText="保存" @processing="validateTest" />
       </div>
     </div>
-    <div>
+    <div class="cancel-modal">
       <ConfirmationModal
         :isVisible="modalVisible"
         message="編集内容が破棄されますがよろしいですか？"

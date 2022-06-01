@@ -91,6 +91,7 @@ export default createStore({
         console.log(error);
       }
     },
+    // 会員登録
     async register(context, data) {
       try {
         const sendData = {
@@ -108,6 +109,7 @@ export default createStore({
         console.log(error);
       }
     },
+    // 栄養素一覧取得
     async getNutrients(context) {
       console.log(context.state.authHeader);
       try {
@@ -126,6 +128,7 @@ export default createStore({
         return error;
       }
     },
+    // 目安量登録
     async saveEstimatedQuantity(context, data) {
       const targetNutrient = context.state.nutrients.find(
         (n) => n.food_name === data.nutrientsListFoodName
@@ -152,6 +155,48 @@ export default createStore({
         return error;
       }
     },
+    // 保存済み目安量一覧取得
+    async getEstimatedQuantity(context) {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/nutrients/estimatedquantitylist",
+          context.state.authHeader
+        );
+        console.log("storeのgetEstimatedQuantityの成功res");
+        console.log(res.data);
+        return res.data;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log("storeのgetEstimatedQuantityのエラー");
+        console.log(errorMessage);
+        console.log(context.state.authHeader);
+        return error;
+      }
+    },
+    // 登録済目安量削除
+    async deleteEstimatedQuantity(context, id) {
+      try {
+        const res = await axios.delete(
+          "http://localhost:3000/nutrients/deleteestimatedquantity",
+          // deleteメソッドでは引数を3つ取れないのでこの形で渡す
+          {
+            data: { id },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log("storeのdeleteEstimatedQuantityのエラー");
+        console.log(errorMessage);
+        console.log(context.state.authHeader);
+        return error;
+      }
+    },
+
+    // ログアウト
     logout(context) {
       localStorage.removeItem("token");
       context.commit("logout");

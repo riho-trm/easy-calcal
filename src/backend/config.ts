@@ -3,7 +3,7 @@ export const config = {
     secret: "foidsDWS82Svg",
     options: {
       algorithm: "HS256",
-      expiresIn: "10m",
+      expiresIn: "60m",
     },
   },
 };
