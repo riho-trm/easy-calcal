@@ -60,3 +60,16 @@ export interface Nutrients {
     sodium_chloride_equivalent: number;
   };
 }
+
+export interface EstimatedAmountList {
+  id: number;
+  classificationId: number;
+  nutrientId: number;
+  foodName: string;
+  foodNameTodisplay: string;
+  unit: string;
+  standardQuantity: number;
+  includeDisposal: boolean;
+  creeatedAt: date;
+  updatedAt: date;
+}

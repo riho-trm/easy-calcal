@@ -22,7 +22,7 @@
 
           <tr class="esitimated-amount" v-for="state in states" :key="state.id">
             <td class="icon-btn">
-              <div @click="routeEditData(state.id)"><fa icon="pen" /></div>
+              <div @click="routeEditData(state)"><fa icon="pen" /></div>
               <div @click="showModal(state.id)"><fa icon="trash-can" /></div>
             </td>
             <td>{{ state.id }}</td>
@@ -64,30 +64,40 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
 
-    let states = reactive([{}]);
+    let states = reactive([
+      {
+        id: -1,
+        classificationId: -1,
+        nutrientId: -1,
+        foodName: "",
+        foodNameTodisplay: "",
+        unit: "",
+        standardQuantity: -1,
+        includeDisposal: Boolean(0),
+        creeatedAt: "",
+        updatedAt: "",
+      },
+    ]);
     let modalVisible = ref(false);
     let targetId = ref(-1);
 
     const created = async () => {
-      // statesのデータ全削除
       states.splice(0);
       try {
-        const res = await store.dispatch("getEstimatedQuantity");
+        await store.dispatch("getEstimatedQuantity");
+        const res = await store.getters.getEstimatedAmountList;
         for (const data of res) {
-          const targetNutrient = await store.state.nutrients.find(
-            (n: any) => n.id === data.nutrient_id
-          );
           states.push({
             id: data.id,
-            classificationId: data.classification_id,
-            nutrientId: data.nutrient_id,
-            foodName: targetNutrient.food_name,
-            foodNameTodisplay: data.food_name_todisplay,
+            classificationId: data.classificationId,
+            nutrientId: data.nutrientId,
+            foodName: data.foodName,
+            foodNameTodisplay: data.foodNameTodisplay,
             unit: data.unit,
-            standardQuantity: data.standard_quantity,
-            includeDisposal: data.include_disposal,
-            creeatedAt: new Date(Date.parse(data.creeated_at)).toLocaleString(),
-            updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
+            standardQuantity: data.standardQuantity,
+            includeDisposal: Boolean(data.includeDisposal),
+            creeatedAt: new Date(Date.parse(data.creeatedAt)).toLocaleString(),
+            updatedAt: new Date(Date.parse(data.updatedAt)).toLocaleString(),
           });
         }
       } catch (error) {
@@ -107,15 +117,16 @@ export default defineComponent({
 
     const deleteData = async (id: any) => {
       try {
+        // resは削除対象のインデックス番号
         const res = await store.dispatch("deleteEstimatedQuantity", id);
+        states.splice(res, 1);
         closeModal();
-        created();
       } catch (error) {
         console.log(error);
       }
     };
-    const routeEditData = (id: number) => {
-      router.push({ path: `/editestimatedamount/${id}` });
+    const routeEditData = (state: any) => {
+      router.push({ path: "/editestimatedamount", query: state });
     };
 
     return {
