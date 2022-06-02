@@ -8,6 +8,7 @@ import TopMenu from "../views/TopMenu.vue";
 import AdminMenu from "../views/AdminMenu.vue";
 import RegisterEstimatedAmount from "../views/RegisterEstimatedAmount.vue";
 import EstimatedAmountList from "../views/EstimatedAmountList.vue";
+import EditEstimatedAmount from "../views/EditEstimatedAmount.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
@@ -61,6 +62,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/estimatedamountlist",
     name: "EstimatedAmountList",
     component: EstimatedAmountList,
+  },
+  {
+    path: "/editestimatedamount/:id",
+    name: "EditEstimatedAmount",
+    component: EditEstimatedAmount,
   },
 ];
 

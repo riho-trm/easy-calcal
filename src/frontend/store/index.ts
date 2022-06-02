@@ -1,12 +1,13 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
-import { Nutrients } from "@/types/task";
+import { EstimatedAmountList, Nutrients } from "@/types/task";
 
 // リクエストヘッダーに含めるトークン
 // let authHeader = {};
 
 export default createStore({
+  // ステート
   state: {
     // リクエストヘッダーに含めるトークン
     authHeader: {
@@ -24,8 +25,13 @@ export default createStore({
     },
     // 栄養成分一覧
     nutrients: {} as Nutrients,
+    // 目安量一覧
+    estimatedAmountList: [] as Array<EstimatedAmountList>,
   },
+
+  // ゲッター
   getters: {
+    // 栄養素のサジェストに使う食品名一覧を取得
     getSugestList(state) {
       const list = [];
       for (const nutrient in state.nutrients) {
@@ -33,7 +39,18 @@ export default createStore({
       }
       return list;
     },
+    // ステートの目安量一覧を取得
+    getEstimatedAmountList(state) {
+      return state.estimatedAmountList;
+    },
+    // 渡されたidに基づく目安量を1件取得
+    getEstimatedAmount: (state) => (id: number) => {
+      const data = state.estimatedAmountList.find((data) => data.id === id);
+      return data;
+    },
   },
+
+  // ミューテーション
   mutations: {
     // ログイン時にユーザー情報を格納
     login(state, payload) {
@@ -65,7 +82,35 @@ export default createStore({
     setNutrients(state, payload) {
       state.nutrients = payload;
     },
+    // 目安量一覧を格納
+    setEstimatedAmountList(state, payload) {
+      // stateのestimatedAmountListのデータ全削除
+      state.estimatedAmountList.splice(0);
+      for (const data of payload) {
+        const targetNutrient = state.nutrients.find(
+          (n: any) => n.id === data.nutrient_id
+        );
+        state.estimatedAmountList.push({
+          id: data.id,
+          classificationId: data.classification_id,
+          nutrientId: data.nutrient_id,
+          foodName: targetNutrient.food_name,
+          foodNameTodisplay: data.food_name_todisplay,
+          unit: data.unit,
+          standardQuantity: data.standard_quantity,
+          includeDisposal: data.include_disposal,
+          creeatedAt: new Date(Date.parse(data.creeated_at)).toLocaleString(),
+          updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
+        });
+      }
+    },
+    // 目安量一覧から対象のデータを削除
+    deleteEstimatedAmountList(state, payload) {
+      state.estimatedAmountList.splice(payload, 1);
+    },
   },
+
+  // アクション
   actions: {
     // ログイン
     async login(context, data) {
@@ -164,7 +209,7 @@ export default createStore({
         );
         console.log("storeのgetEstimatedQuantityの成功res");
         console.log(res.data);
-        return res.data;
+        context.commit("setEstimatedAmountList", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log("storeのgetEstimatedQuantityのエラー");
@@ -186,10 +231,30 @@ export default createStore({
             },
           }
         );
-        return res;
+        const targetIndex = context.state.estimatedAmountList.findIndex(
+          (data) => data.id === id
+        );
+        context.commit("deleteEstimatedAmountList", targetIndex);
+        return targetIndex;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log("storeのdeleteEstimatedQuantityのエラー");
+        console.log(errorMessage);
+        console.log(context.state.authHeader);
+        return error;
+      }
+    },
+    // 登録済目安量編集
+    async updateEstimatedQuantity(context, sendData) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/nutrients/updateestimatedquantity",
+          sendData,
+          context.state.authHeader
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
         console.log(errorMessage);
         console.log(context.state.authHeader);
         return error;
