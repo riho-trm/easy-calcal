@@ -66,4 +66,25 @@ router.delete("/deleteestimatedquantity", authenticate, (req, res) => {
   });
 });
 
+router.put("/updateestimatedquantity", authenticate, (req, res) => {
+  const sql =
+    "update food_estimated_quantity set food_name_todisplay=?, unit=?, standard_quantity=?, include_disposal=? WHERE id=?";
+  connection.query(
+    sql,
+    [
+      req.body.toDisplayFoodName,
+      req.body.unit,
+      req.body.standardQuantity,
+      req.body.includeDisposal,
+      req.body.id,
+    ],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      res.json({ status: "success" });
+    }
+  );
+});
+
 export default router;
