@@ -22,7 +22,7 @@
 
           <tr class="esitimated-amount" v-for="state in states" :key="state.id">
             <td class="icon-btn">
-              <div @click="routeEditData(state)"><fa icon="pen" /></div>
+              <div @click="routeEditData(state.id)"><fa icon="pen" /></div>
               <div @click="showModal(state.id)"><fa icon="trash-can" /></div>
             </td>
             <td>{{ state.id }}</td>
@@ -125,8 +125,8 @@ export default defineComponent({
         console.log(error);
       }
     };
-    const routeEditData = (state: any) => {
-      router.push({ path: "/editestimatedamount", query: state });
+    const routeEditData = (id: any) => {
+      router.push({ path: `/editestimatedamount/${id}` });
     };
 
     return {

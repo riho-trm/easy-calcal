@@ -43,6 +43,11 @@ export default createStore({
     getEstimatedAmountList(state) {
       return state.estimatedAmountList;
     },
+    // 渡されたidに基づく目安量を1件取得
+    getEstimatedAmount: (state) => (id: number) => {
+      const data = state.estimatedAmountList.find((data) => data.id === id);
+      return data;
+    },
   },
 
   // ミューテーション
@@ -234,6 +239,22 @@ export default createStore({
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log("storeのdeleteEstimatedQuantityのエラー");
+        console.log(errorMessage);
+        console.log(context.state.authHeader);
+        return error;
+      }
+    },
+    // 登録済目安量編集
+    async updateEstimatedQuantity(context, sendData) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/nutrients/updateestimatedquantity",
+          sendData,
+          context.state.authHeader
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
         console.log(errorMessage);
         console.log(context.state.authHeader);
         return error;

@@ -64,7 +64,7 @@ const routes: Array<RouteRecordRaw> = [
     component: EstimatedAmountList,
   },
   {
-    path: "/editestimatedamount",
+    path: "/editestimatedamount/:id",
     name: "EditEstimatedAmount",
     component: EditEstimatedAmount,
   },
