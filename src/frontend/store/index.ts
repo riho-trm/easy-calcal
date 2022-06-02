@@ -31,6 +31,10 @@ export default createStore({
 
   // ゲッター
   getters: {
+    // ログイン中のユーザー情報を取得
+    getUserInformation(state) {
+      return state.auth;
+    },
     // 栄養素のサジェストに使う食品名一覧を取得
     getSugestList(state) {
       const list = [];
