@@ -9,6 +9,7 @@ import AdminMenu from "../views/AdminMenu.vue";
 import RegisterEstimatedAmount from "../views/RegisterEstimatedAmount.vue";
 import EstimatedAmountList from "../views/EstimatedAmountList.vue";
 import EditEstimatedAmount from "../views/EditEstimatedAmount.vue";
+import CalcCalories from "../views/CalcCalories.vue";
 import MyPage from "../views/MyPage.vue";
 import { authorizeToken } from "./guards";
 
@@ -82,6 +83,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/mypage",
     name: "MyPage",
     component: MyPage,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/calccalories",
+    name: "CalcCalories",
+    component: CalcCalories,
     meta: {
       requiresAuth: true,
     },
