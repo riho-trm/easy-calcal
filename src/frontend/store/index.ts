@@ -3,9 +3,6 @@ import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
 import { EstimatedAmountList, Nutrients } from "@/types/task";
 
-// リクエストヘッダーに含めるトークン
-// let authHeader = {};
-
 export default createStore({
   // ステート
   state: {
@@ -24,7 +21,7 @@ export default createStore({
       isAdmin: 0, // 0:false,1:true
     },
     // 栄養成分一覧
-    nutrients: {} as Nutrients,
+    nutrients: [] as Array<Nutrients>,
     // 目安量一覧
     estimatedAmountList: [] as Array<EstimatedAmountList>,
   },
@@ -38,8 +35,8 @@ export default createStore({
     // 栄養素のサジェストに使う食品名一覧を取得
     getSugestList(state) {
       const list = [];
-      for (const nutrient in state.nutrients) {
-        list.push(state.nutrients[nutrient].food_name);
+      for (const nutrient of state.nutrients) {
+        list.push(nutrient.food_name);
       }
       return list;
     },
@@ -52,6 +49,38 @@ export default createStore({
       const data = state.estimatedAmountList.find((data) => data.id === id);
       return data;
     },
+    // 渡された食品名に基づく栄養素を1件取得
+    getNutrient: (state) => (foodName: string) => {
+      const data = state.nutrients.find((data) => data.food_name === foodName);
+      return data;
+    },
+    // 食材量を基に栄養量を計算
+    calcNutrientsQuanrity:
+      (state) => (foodName: string, foodQuantity: number) => {
+        const list = {} as Nutrients;
+        const data = state.nutrients.find(
+          (n: Nutrients) => n.food_name === foodName
+        );
+        if (data) {
+          for (const key in data) {
+            if (
+              key === "id" ||
+              key === "classification_id" ||
+              key === "food_number" ||
+              key === "food_name" ||
+              key === "disposal_rate"
+            ) {
+              list[key] = data[key] as never;
+            } else {
+              const quantity = data[key] as number;
+              const calcQuantity = (foodQuantity / 100) * quantity;
+              list[key] = Math.round(calcQuantity * 100) / 100;
+            }
+          }
+        }
+
+        return list;
+      },
   },
 
   // ミューテーション
@@ -92,20 +121,22 @@ export default createStore({
       state.estimatedAmountList.splice(0);
       for (const data of payload) {
         const targetNutrient = state.nutrients.find(
-          (n: any) => n.id === data.nutrient_id
+          (n: Nutrients) => n.id === data.nutrient_id
         );
-        state.estimatedAmountList.push({
-          id: data.id,
-          classificationId: data.classification_id,
-          nutrientId: data.nutrient_id,
-          foodName: targetNutrient.food_name,
-          foodNameTodisplay: data.food_name_todisplay,
-          unit: data.unit,
-          standardQuantity: data.standard_quantity,
-          includeDisposal: data.include_disposal,
-          creeatedAt: new Date(Date.parse(data.creeated_at)).toLocaleString(),
-          updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
-        });
+        if (targetNutrient) {
+          state.estimatedAmountList.push({
+            id: data.id,
+            classificationId: data.classification_id,
+            nutrientId: data.nutrient_id,
+            foodName: targetNutrient.food_name,
+            foodNameTodisplay: data.food_name_todisplay,
+            unit: data.unit,
+            standardQuantity: data.standard_quantity,
+            includeDisposal: data.include_disposal,
+            creeatedAt: new Date(Date.parse(data.creeated_at)).toLocaleString(),
+            updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
+          });
+        }
       }
     },
     // 目安量一覧から対象のデータを削除
@@ -167,7 +198,7 @@ export default createStore({
           context.state.authHeader
         );
         console.log("storeのgetNutrientsの成功res");
-        console.log(res);
+        console.log(res.data);
         context.commit("setNutrients", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
@@ -182,26 +213,29 @@ export default createStore({
       const targetNutrient = context.state.nutrients.find(
         (n) => n.food_name === data.nutrientsListFoodName
       );
-      const sendData = {
-        classificationId: targetNutrient.classification_id,
-        nutrientId: targetNutrient.id,
-        foodNameTodisplay: data.toDisplayFoodName,
-        unit: data.unit,
-        standardQuantity: data.standardQuantity,
-        includeDisposal: data.includeDisposal,
-      };
-      try {
-        const res = await axios.post(
-          "http://localhost:3000/nutrients/registestimatedquantity",
-          sendData,
-          context.state.authHeader
-        );
-      } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        console.log("storeのsaveEstimatedQuantityのエラー");
-        console.log(errorMessage);
-        console.log(context.state.authHeader);
-        return error;
+      if (targetNutrient) {
+        const sendData = {
+          classificationId: targetNutrient.classification_id,
+          nutrientId: targetNutrient.id,
+          foodNameTodisplay: data.toDisplayFoodName,
+          unit: data.unit,
+          standardQuantity: data.standardQuantity,
+          includeDisposal: data.includeDisposal,
+        };
+
+        try {
+          const res = await axios.post(
+            "http://localhost:3000/nutrients/registestimatedquantity",
+            sendData,
+            context.state.authHeader
+          );
+        } catch (error: any) {
+          const errorMessage = error.response.data || error.message;
+          console.log("storeのsaveEstimatedQuantityのエラー");
+          console.log(errorMessage);
+          console.log(context.state.authHeader);
+          return error;
+        }
       }
     },
     // 保存済み目安量一覧取得
