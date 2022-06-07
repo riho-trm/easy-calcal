@@ -5,9 +5,9 @@
         <router-link to="/">title（仮）</router-link>
       </div>
       <div class="link">
-        <router-link to="/">カロリー計算</router-link>
-        <router-link to="/">Myデータ</router-link>
-        <router-link to="/">マイページ</router-link>
+        <router-link to="/calccalories">カロリー計算</router-link>
+        <router-link to="/mypage">Myデータ</router-link>
+        <router-link to="/mypage">マイページ</router-link>
         <router-link to="/adminmenu" v-if="isAdmin === 1"
           >管理者メニュー</router-link
         >
