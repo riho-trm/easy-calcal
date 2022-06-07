@@ -37,7 +37,26 @@
       </div>
 
       <div class="display-nutrients">
-        <div class="title"></div>
+        <div class="title">総カロリーと三大栄養素</div>
+        <div class="calculated-nutrient">
+          <div class="carolies">エネルギー：{{ totalNutrient.calories }}</div>
+          <div class="protain">たんぱく質：{{ totalNutrient.protain }}</div>
+          <div class="fat">脂質：{{ totalNutrient.fat }}</div>
+          <div class="carbon">炭水化物：{{ totalNutrient.carbohydrate }}</div>
+        </div>
+        <div class="modal-btn">
+          <ConfirmationModal
+            :isVisible="modalVisible"
+            message="全ての栄養素を見る"
+            @cancel="closeModal"
+          />
+          <ConfirmationModal
+            :isVisible="modalVisible"
+            message="保存"
+            @cancel="closeModal"
+            @processing="deleteData(targetId)"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -52,6 +71,7 @@ import { useStore } from "vuex";
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
+import ConfirmationModal from "@/components/ConfirmationModal.vue";
 
 export default defineComponent({
   components: {
@@ -59,6 +79,7 @@ export default defineComponent({
     BaseInput,
     AppProcessingButton,
     AppCancelButton,
+    ConfirmationModal,
   },
   setup() {
     const store = useStore();
