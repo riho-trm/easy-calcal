@@ -76,8 +76,9 @@ export interface EstimatedAmountList {
 }
 
 export interface CalculatedNutrient {
-  [index: string]: number | Nutrients;
+  [index: string]: number | [] | Nutrients;
   quantity: number;
+  estimatedIdList: [];
   nutrient: Nutrients;
 }
 
