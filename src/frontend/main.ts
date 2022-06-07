@@ -12,10 +12,14 @@ import { faLeaf, faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
 /* import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
+import vSelect from "vue-select";
+import "vue-select/dist/vue-select.css";
+
 /* add icons to the library */
 library.add(faLeaf, faPen, faTrashCan);
 
 const app = createApp(App);
 // eslint-disable-next-line vue/multi-word-component-names
 app.component("fa", FontAwesomeIcon);
+app.component("v-select", vSelect);
 app.use(store).use(router).mount("#app");

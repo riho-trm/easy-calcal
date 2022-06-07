@@ -47,6 +47,7 @@
     "vue-class-component": "^8.0.0-0",
     "vue-cool-select": "^3.5.2",
     "vue-router": "^4.0.3",
+    "vue-select": "^4.0.0-beta.3",
     "vue3-simple-typeahead": "^1.0.5",
     "vuex": "^4.0.0",
     "vuex-persistedstate": "^4.1.0"
@@ -56,6 +57,7 @@
     "@types/cors": "^2.8.12",
     "@types/express-domain-middleware": "^0.0.6",
     "@types/mysql": "^2.15.21",
+    "@types/vue-select": "^3.16.0",
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "@vue/cli-plugin-babel": "~5.0.0",
