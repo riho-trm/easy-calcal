@@ -49,6 +49,16 @@ export default createStore({
       const data = state.estimatedAmountList.find((data) => data.id === id);
       return data;
     },
+    // 渡された栄養素idに基づく目安量id一覧を配列で取得
+    getEstimatedIdList: (state) => (id: number) => {
+      const data = [];
+      for (const estimatedAmount of state.estimatedAmountList) {
+        if (estimatedAmount.nutrientId === id) {
+          data.push(estimatedAmount.id);
+        }
+      }
+      return data;
+    },
     // 渡された食品名に基づく栄養素を1件取得
     getNutrient: (state) => (foodName: string) => {
       const data = state.nutrients.find((data) => data.food_name === foodName);
@@ -78,6 +88,7 @@ export default createStore({
             }
           }
         }
+        1;
 
         return list;
       },

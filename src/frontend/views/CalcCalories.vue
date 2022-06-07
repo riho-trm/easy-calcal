@@ -35,6 +35,7 @@
                 <p class="gram">g</p>
               </div>
               <AppProcessingButton
+                v-if="food.estimatedIdList.length >= 1"
                 class="btn input-estimated-btn"
                 buttonText="目安量で入力"
               />
@@ -61,13 +62,8 @@
           <AppProcessingButton
             class="btn show-all-nutrient-btn"
             buttonText="全ての栄養素を見る"
-            @processing="validateTest"
           />
-          <AppProcessingButton
-            class="btn save-btn"
-            buttonText="保存"
-            @processing="validateTest"
-          />
+          <AppProcessingButton class="btn save-btn" buttonText="保存" />
         </div>
       </div>
     </div>
@@ -165,12 +161,21 @@ export default defineComponent({
       }
     };
 
-    const selectItem = (foodName: string) => {
-      const res: Nutrients = store.getters.calcNutrientsQuanrity(foodName, 0);
+    const selectItem = async (foodName: string) => {
+      const nutrientRes: Nutrients = await store.getters.calcNutrientsQuanrity(
+        foodName,
+        0
+      );
+      const estimatedIdRes = await store.getters.getEstimatedIdList(
+        nutrientRes.id
+      );
       state.push({
         quantity: 0,
-        nutrient: res,
+        estimatedIdList: estimatedIdRes,
+        nutrient: nutrientRes,
       });
+      console.log(state);
+
       // モジュールのdata内のinputにアクセスしてリセット
       typeahead.value.input = "";
     };
