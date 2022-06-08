@@ -69,7 +69,7 @@
           <AppProcessingButton
             class="btn show-all-nutrient-btn"
             buttonText="全ての栄養素を見る"
-            @processing="showModal('show')"
+            @processing="openShowAllNutrientModal"
           />
           <AppProcessingButton
             class="btn save-btn"
@@ -88,6 +88,11 @@
         @cancel="closeInputEstimatedModal"
         @processing="setQuantity"
       />
+      <ShowAllNutrientModal
+        :isVisible="showAllNutrientModalVisible"
+        :totalNutrient="totalNutrient"
+        @close="closeShowAllNutrientModal"
+      />
     </div>
   </div>
 </template>
@@ -102,6 +107,7 @@ import BaseInput from "@/components/presentational/BaseInput.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
 import InputEstimatedModal from "@/components/InputEstimatedModal.vue";
+import ShowAllNutrientModal from "@/components/ShowAllNutrientModal.vue";
 
 export default defineComponent({
   components: {
@@ -110,6 +116,7 @@ export default defineComponent({
     AppProcessingButton,
     AppCancelButton,
     InputEstimatedModal,
+    ShowAllNutrientModal,
   },
   setup() {
     const store = useStore();
@@ -124,13 +131,10 @@ export default defineComponent({
       estimatedIdList: [],
       stateIndex: -1,
     });
+    let showAllNutrientModalVisible = ref(false);
     let saveCalculatedModalData = reactive({
       saveCalculatedModalVisible: false,
     });
-    let showAllNutrientModalData = reactive({
-      showAllNutrientModalVisible: false,
-    });
-
     let totalNutrient = reactive({
       calories: 0,
       water: 0,
@@ -279,13 +283,17 @@ export default defineComponent({
       inputEstimatedModalData.stateIndex = index;
     };
     // const openSaveCalculatedModal = () => {};
-    // const openShowAllNutrientModal = () => {};
+    const openShowAllNutrientModal = () => {
+      showAllNutrientModalVisible.value = true;
+    };
 
     const closeInputEstimatedModal = () => {
       inputEstimatedModalData.inputEstimatedModalVisible = false;
     };
     // const closeSaveCalculatedModal = () => {};
-    // const closeShowAllNutrientModal = () => {};
+    const closeShowAllNutrientModal = () => {
+      showAllNutrientModalVisible.value = false;
+    };
 
     const setQuantity = (
       calculatedQuantity: number,
@@ -302,8 +310,8 @@ export default defineComponent({
       state,
       sugestItems,
       inputEstimatedModalData,
+      showAllNutrientModalVisible,
       saveCalculatedModalData,
-      showAllNutrientModalData,
       totalNutrient,
       selectItem,
       typeahead,
@@ -313,10 +321,10 @@ export default defineComponent({
       resetTotalNutrient,
       openInputEstimatedModal,
       //   openSaveCalculatedModal,
-      //   openShowAllNutrientModal,
+      openShowAllNutrientModal,
       closeInputEstimatedModal,
       // closeSaveCalculatedModal,
-      // closeShowAllNutrientModal,
+      closeShowAllNutrientModal,
       setQuantity,
     };
   },
