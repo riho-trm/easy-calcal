@@ -76,6 +76,7 @@ export default defineComponent({
     },
     foodName: { type: String, required: true },
     estimatedIdList: { type: Array, required: true },
+    index: { type: Number, required: true },
   },
   emits: ["cancel", "processing"],
   setup(props, context) {
@@ -90,20 +91,7 @@ export default defineComponent({
     let options = reactive([]) as Selected[];
     let quantity = ref(0);
     let copiedFoodName = "";
-
-    const created = () => {
-      console.log("createdが呼ばれた");
-      for (const id of props.estimatedIdList) {
-        const res = store.getters.getEstimatedAmount(id);
-        console.log(res);
-        options.push({
-          label: res.unit,
-          unit: res.unit,
-          standardQuantity: res.standardQuantity,
-        });
-      }
-    };
-    created();
+    let calculatedQuantity = 0;
 
     watch(estimatedIdList, () => {
       console.log("watchが呼ばれた");
@@ -134,17 +122,32 @@ export default defineComponent({
       const calcData = select.value.standardQuantity * quantity.value;
       console.log(Math.round(calcData * 100) / 100);
       if (isNaN(calcData)) {
-        return 0;
+        calculatedQuantity = 0;
+        return calculatedQuantity;
       } else {
-        return Math.round(calcData * 100) / 100;
+        calculatedQuantity = Math.round(calcData * 100) / 100;
+        return calculatedQuantity;
       }
     });
 
     const cancel = () => {
       context.emit("cancel");
+      select.value = "";
+      quantity.value = 0;
+      copiedFoodName = "";
+      calculatedQuantity = 0;
     };
     const processing = () => {
-      context.emit("processing");
+      context.emit(
+        "processing",
+        calculatedQuantity,
+        props.index,
+        props.foodName
+      );
+      select.value = "";
+      quantity.value = 0;
+      copiedFoodName = "";
+      calculatedQuantity = 0;
     };
 
     return {
@@ -255,6 +258,7 @@ export default defineComponent({
         position: absolute;
         top: 1rem;
         right: 2rem;
+        cursor: pointer;
       }
     }
   }

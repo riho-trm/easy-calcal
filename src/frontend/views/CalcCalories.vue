@@ -30,7 +30,7 @@
                   name="quantity"
                   type="text"
                   v-model="food.quantity"
-                  @onBlur="onBlur($event, index, food.nutrient.food_name)"
+                  @onBlur="calcNutrient($event, index, food.nutrient.food_name)"
                 />
                 <p class="gram">g</p>
               </div>
@@ -41,7 +41,8 @@
                 @processing="
                   openInputEstimatedModal(
                     food.nutrient.food_name,
-                    food.estimatedIdList
+                    food.estimatedIdList,
+                    index
                   )
                 "
               />
@@ -83,6 +84,9 @@
         :isVisible="inputEstimatedModalData.inputEstimatedModalVisible"
         :foodName="inputEstimatedModalData.foodName"
         :estimatedIdList="inputEstimatedModalData.estimatedIdList"
+        :index="inputEstimatedModalData.stateIndex"
+        @cancel="closeInputEstimatedModal"
+        @processing="setQuantity"
       />
     </div>
   </div>
@@ -118,6 +122,7 @@ export default defineComponent({
       inputEstimatedModalVisible: false,
       foodName: "",
       estimatedIdList: [],
+      stateIndex: -1,
     });
     let saveCalculatedModalData = reactive({
       saveCalculatedModalVisible: false,
@@ -211,7 +216,11 @@ export default defineComponent({
       typeahead.value.input = "";
     };
 
-    const onBlur = (quantity: number, index: number, foodName: string) => {
+    const calcNutrient = (
+      quantity: number,
+      index: number,
+      foodName: string
+    ) => {
       const res: Nutrients = store.getters.calcNutrientsQuanrity(
         foodName,
         quantity
@@ -259,13 +268,36 @@ export default defineComponent({
       resetTotalNutrient();
     };
 
-    const openInputEstimatedModal = (foodName: string, estimatedIdList: []) => {
+    const openInputEstimatedModal = (
+      foodName: string,
+      estimatedIdList: [],
+      index: number
+    ) => {
       inputEstimatedModalData.inputEstimatedModalVisible = true;
       inputEstimatedModalData.foodName = foodName;
       inputEstimatedModalData.estimatedIdList = estimatedIdList;
+      inputEstimatedModalData.stateIndex = index;
     };
-    // const opensaveCalculatedModal = () => {};
-    // const openshowAllNutrientModal = () => {};
+    // const openSaveCalculatedModal = () => {};
+    // const openShowAllNutrientModal = () => {};
+
+    const closeInputEstimatedModal = () => {
+      inputEstimatedModalData.inputEstimatedModalVisible = false;
+    };
+    // const closeSaveCalculatedModal = () => {};
+    // const closeShowAllNutrientModal = () => {};
+
+    const setQuantity = (
+      calculatedQuantity: number,
+      index: number,
+      foodName: string
+    ) => {
+      console.log(calculatedQuantity, index);
+      state[index].quantity = calculatedQuantity;
+      calcNutrient(calculatedQuantity, index, foodName);
+      closeInputEstimatedModal();
+    };
+
     return {
       state,
       sugestItems,
@@ -275,13 +307,17 @@ export default defineComponent({
       totalNutrient,
       selectItem,
       typeahead,
-      onBlur,
+      calcNutrient,
       deleteItem,
       resetItem,
       resetTotalNutrient,
       openInputEstimatedModal,
-      //   opensaveCalculatedModal,
-      //   openshowAllNutrientModal,
+      //   openSaveCalculatedModal,
+      //   openShowAllNutrientModal,
+      closeInputEstimatedModal,
+      // closeSaveCalculatedModal,
+      // closeShowAllNutrientModal,
+      setQuantity,
     };
   },
 });
