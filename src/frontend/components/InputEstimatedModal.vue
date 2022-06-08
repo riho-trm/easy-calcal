@@ -33,19 +33,20 @@
               v-bind:options="options"
               v-model="select"
             ></v-select>
-            {{ select }}
           </div>
         </div>
         <div class="gram-input">
           <BaseLabel id="gram">グラム換算</BaseLabel>
-          <BaseInput
-            id="gram"
-            name="gram"
-            type="text"
-            v-model="calcQuantity"
-            disabled
-          />
-          <p>g</p>
+          <div class="add-unit">
+            <BaseInput
+              id="gram"
+              name="gram"
+              type="text"
+              v-model="calcQuantity"
+              disabled
+            />
+            <p>g</p>
+          </div>
         </div>
         <div class="btn">
           <div class="cancel" @click="cancel"><fa icon="xmark" /></div>
@@ -190,18 +191,71 @@ export default defineComponent({
   width: 600px;
   height: auto;
   padding: 20px;
-
-  .button {
-    width: 70%;
+  .modal-wrapper {
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
-    display: flex;
-    justify-content: center;
-    padding: 2rem 0;
-    :deep(.btn) {
-      font-size: 1.5rem;
-      padding: 0.5rem 2rem;
-      margin: 0 1rem;
+    :deep(label) {
+      font-size: 1.3rem;
+      font-weight: 450;
+      padding: 1rem 0;
+      display: block;
+      width: 100%;
+      text-align: left;
+    }
+    :deep(.input-form) {
+      width: 30%;
+      height: 35px;
+      border: 1px solid #dcdcdc;
+      font-size: 100%;
+      margin-left: 1rem;
+    }
+    .food-name-input {
+      :deep(.input-form) {
+        width: 90%;
+        background-color: #bcbbbb;
+      }
+    }
+    .unit-input {
+      .v-select {
+        width: 30%;
+        margin-left: 1rem;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      }
+    }
+    .gram-input {
+      .add-unit {
+        display: flex;
+        :deep(.input-form) {
+          background-color: #bcbbbb;
+        }
+        p {
+          font-size: 1rem;
+          font-weight: 400;
+          padding-left: 1rem;
+        }
+      }
+    }
+
+    .btn {
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      justify-content: center;
+      padding: 2rem 0;
+      :deep(.btn) {
+        font-size: 1.5rem;
+        padding: 0.5rem 2rem;
+        margin: 0 1rem;
+      }
+      .cancel {
+        font-size: 2rem;
+        color: gray;
+        position: absolute;
+        top: 1rem;
+        right: 2rem;
+      }
     }
   }
 }
