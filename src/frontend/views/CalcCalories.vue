@@ -16,7 +16,7 @@
           <div
             class="quantity-list"
             v-for="(food, index) in state"
-            :key="food.id"
+            :key="index"
           >
             <div class="icon-btn" @click="deleteItem(index)">
               <fa icon="trash-can" />
@@ -38,6 +38,12 @@
                 v-if="food.estimatedIdList.length >= 1"
                 class="btn input-estimated-btn"
                 buttonText="目安量で入力"
+                @processing="
+                  openInputEstimatedModal(
+                    food.nutrient.food_name,
+                    food.estimatedIdList
+                  )
+                "
               />
             </div>
           </div>
@@ -62,10 +68,22 @@
           <AppProcessingButton
             class="btn show-all-nutrient-btn"
             buttonText="全ての栄養素を見る"
+            @processing="showModal('show')"
           />
-          <AppProcessingButton class="btn save-btn" buttonText="保存" />
+          <AppProcessingButton
+            class="btn save-btn"
+            buttonText="保存"
+            @processing="showModal('save')"
+          />
         </div>
       </div>
+    </div>
+    <div class="modal">
+      <InputEstimatedModal
+        :isVisible="inputEstimatedModalData.inputEstimatedModalVisible"
+        :foodName="inputEstimatedModalData.foodName"
+        :estimatedIdList="inputEstimatedModalData.estimatedIdList"
+      />
     </div>
   </div>
 </template>
@@ -79,6 +97,7 @@ import { useStore } from "vuex";
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
+import InputEstimatedModal from "@/components/InputEstimatedModal.vue";
 
 export default defineComponent({
   components: {
@@ -86,6 +105,7 @@ export default defineComponent({
     BaseInput,
     AppProcessingButton,
     AppCancelButton,
+    InputEstimatedModal,
   },
   setup() {
     const store = useStore();
@@ -94,7 +114,18 @@ export default defineComponent({
 
     let state = reactive([]) as Array<CalculatedNutrient>;
     let sugestItems = reactive([]);
-    let modalVisible = ref(false);
+    let inputEstimatedModalData = reactive({
+      inputEstimatedModalVisible: false,
+      foodName: "",
+      estimatedIdList: [],
+    });
+    let saveCalculatedModalData = reactive({
+      saveCalculatedModalVisible: false,
+    });
+    let showAllNutrientModalData = reactive({
+      showAllNutrientModalVisible: false,
+    });
+
     let totalNutrient = reactive({
       calories: 0,
       water: 0,
@@ -228,10 +259,19 @@ export default defineComponent({
       resetTotalNutrient();
     };
 
+    const openInputEstimatedModal = (foodName: string, estimatedIdList: []) => {
+      inputEstimatedModalData.inputEstimatedModalVisible = true;
+      inputEstimatedModalData.foodName = foodName;
+      inputEstimatedModalData.estimatedIdList = estimatedIdList;
+    };
+    // const opensaveCalculatedModal = () => {};
+    // const openshowAllNutrientModal = () => {};
     return {
       state,
       sugestItems,
-      modalVisible,
+      inputEstimatedModalData,
+      saveCalculatedModalData,
+      showAllNutrientModalData,
       totalNutrient,
       selectItem,
       typeahead,
@@ -239,6 +279,9 @@ export default defineComponent({
       deleteItem,
       resetItem,
       resetTotalNutrient,
+      openInputEstimatedModal,
+      //   opensaveCalculatedModal,
+      //   openshowAllNutrientModal,
     };
   },
 });

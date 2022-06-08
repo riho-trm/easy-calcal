@@ -137,3 +137,10 @@ export interface TotalNutrient {
   alcohol: number;
   sodium_chloride_equivalent: number;
 }
+
+export interface Selected {
+  [index: striing]: string | number;
+  label: string;
+  unit: string;
+  standardQuantity: number;
+}

@@ -7,7 +7,12 @@ import store from "./store";
 import { library } from "@fortawesome/fontawesome-svg-core";
 
 /* import specific icons */
-import { faLeaf, faPen, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLeaf,
+  faPen,
+  faTrashCan,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
 /* import font awesome icon component */
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -16,7 +21,7 @@ import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
 
 /* add icons to the library */
-library.add(faLeaf, faPen, faTrashCan);
+library.add(faLeaf, faPen, faTrashCan, faXmark);
 
 const app = createApp(App);
 // eslint-disable-next-line vue/multi-word-component-names
