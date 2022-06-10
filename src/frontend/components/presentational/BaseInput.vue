@@ -7,6 +7,7 @@
     :value="modelValue"
     :placeholder="placeholder"
     @input="$emit('update:modelValue', $event.target.value)"
+    @blur="$emit('onBlur', $event.target.value)"
   />
 </template>
 
@@ -31,7 +32,7 @@ export default defineComponent({
     modelValue: { type: [String, Number] },
     placeholder: { type: String },
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "onBlur"],
 });
 </script>
 

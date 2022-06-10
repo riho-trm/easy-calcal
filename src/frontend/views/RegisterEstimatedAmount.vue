@@ -95,8 +95,8 @@
           </div>
         </div>
       </div>
-      <div class="include-displsal-form">
-        <BaseLabel id="include-displsal-name">廃棄率を含む</BaseLabel>
+      <div class="include-disposal-form">
+        <BaseLabel id="include-disposal-name">廃棄率を含む</BaseLabel>
         <BaseCheckbox
           id="include-display-name"
           name="include-display-name"
@@ -314,7 +314,7 @@ export default defineComponent({
         background-color: #bcbbbb;
       }
     }
-    .include-displsal-form {
+    .include-disposal-form {
       :deep(#include-display-name) {
         transform: scale(2);
       }

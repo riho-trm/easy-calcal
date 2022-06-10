@@ -3,13 +3,7 @@
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link>
   </nav> -->
-  <Header
-    v-if="
-      $route.path !== '/' &&
-      $route.path !== '/register' &&
-      $route.path !== '/login'
-    "
-  />
+  <Header v-if="$route.path !== '/register' && $route.path !== '/login'" />
   <router-view />
   <Footer v-if="$route.path !== '/register' && $route.path !== '/login'" />
 </template>

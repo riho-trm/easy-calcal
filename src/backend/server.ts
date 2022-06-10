@@ -29,6 +29,10 @@ app.use("/login", loginRouter);
 const nutrientsRouter = require("./routers/nutrients").default;
 app.use("/nutrients", nutrientsRouter);
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const saveRouter = require("./routers/save").default;
+app.use("/save", saveRouter);
+
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
