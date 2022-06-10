@@ -121,6 +121,8 @@ export default createStore({
           Authorization: "",
         },
       };
+      state.nutrients = [];
+      state.estimatedAmountList = [];
     },
     // 栄養成分一覧を格納
     setNutrients(state, payload) {
@@ -213,10 +215,7 @@ export default createStore({
         context.commit("setNutrients", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        console.log("storeのgetNutrientsのエラー");
-        console.log(errorMessage);
-        console.log(context.state.authHeader);
-        return error;
+        return errorMessage;
       }
     },
     // 目安量登録
@@ -242,10 +241,7 @@ export default createStore({
           );
         } catch (error: any) {
           const errorMessage = error.response.data || error.message;
-          console.log("storeのsaveEstimatedQuantityのエラー");
-          console.log(errorMessage);
-          console.log(context.state.authHeader);
-          return error;
+          return errorMessage;
         }
       }
     },
@@ -261,10 +257,7 @@ export default createStore({
         context.commit("setEstimatedAmountList", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        console.log("storeのgetEstimatedQuantityのエラー");
-        console.log(errorMessage);
-        console.log(context.state.authHeader);
-        return error;
+        return errorMessage;
       }
     },
     // 登録済目安量削除
@@ -287,10 +280,7 @@ export default createStore({
         return targetIndex;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        console.log("storeのdeleteEstimatedQuantityのエラー");
-        console.log(errorMessage);
-        console.log(context.state.authHeader);
-        return error;
+        return errorMessage;
       }
     },
     // 登録済目安量編集
@@ -304,9 +294,43 @@ export default createStore({
         return res;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        console.log(errorMessage);
-        console.log(context.state.authHeader);
-        return error;
+        return errorMessage;
+      }
+    },
+    //myデータ保存
+    async saveMydata(context, data) {
+      try {
+        const sendData = {
+          userId: context.state.auth.userId,
+          title: data.title,
+          memo: data.memo,
+          url: data.url,
+        };
+        const res = await axios.post(
+          "http://localhost:3000/save/savemydata",
+          sendData,
+          context.state.authHeader
+        );
+        return res.data.insertId;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        return errorMessage;
+      }
+    },
+    // myデータに紐付いた栄養情報を保存
+    async saveMyNutrients(context, data) {
+      try {
+        const res = await axios.post(
+          "http://localhost:3000/save/savemynutrients",
+          data,
+          context.state.authHeader
+        );
+        // return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log(error);
+
+        return errorMessage;
       }
     },
 
