@@ -96,6 +96,7 @@
       <SaveCalculatedModal
         :isVisible="saveCalculatedModalVisible"
         @close="closeSaveCalculatedModal"
+        @processing="saveData"
       />
     </div>
   </div>
@@ -314,6 +315,29 @@ export default defineComponent({
       closeInputEstimatedModal();
     };
 
+    const saveData = async (title: string, memo: string, url: string) => {
+      closeSaveCalculatedModal();
+      try {
+        const sendDataOfMydata = { title: title, memo: memo, url: url };
+        const savedDataId = await store.dispatch(
+          "saveMydata",
+          sendDataOfMydata
+        );
+        let sendDataOfMyNutrients = [];
+        for (const data of state) {
+          sendDataOfMyNutrients.push([
+            savedDataId,
+            data.nutrient.id,
+            data.quantity,
+          ]);
+        }
+        await store.dispatch("saveMyNutrients", sendDataOfMyNutrients);
+        router.push("/");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     return {
       state,
       sugestItems,
@@ -334,6 +358,7 @@ export default defineComponent({
       closeSaveCalculatedModal,
       closeShowAllNutrientModal,
       setQuantity,
+      saveData,
     };
   },
 });
