@@ -17,18 +17,25 @@
           <div class="heading-title">パスワード</div>
           <div class="user-information">●●●●●●●●●●●●</div>
         </div>
+        <div class="logout-btn">
+          <AppProcessingButton buttonText="ログアウト" @processing="logout" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
+import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import { defineComponent } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default defineComponent({
+  components: { AppProcessingButton },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     let userInformation = {
       email: "",
@@ -42,8 +49,19 @@ export default defineComponent({
     };
     created();
 
+    const logout = async () => {
+      await store
+        .dispatch("logout")
+        .then(() => {
+          router.push("/login");
+        })
+        .catch((error) => {
+          throw error;
+        });
+    };
     return {
       userInformation,
+      logout,
     };
   },
 });
@@ -86,6 +104,18 @@ export default defineComponent({
       .user-id,
       .password {
         margin-bottom: 35px;
+      }
+      .logout-btn {
+        width: 60%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 0;
+        padding: 1.5rem 0;
+        :deep(.btn) {
+          font-size: 1rem;
+          padding: 0.5rem 2rem;
+          margin: 0 1rem;
+        }
       }
     }
   }
