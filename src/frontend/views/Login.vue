@@ -150,7 +150,7 @@ export default defineComponent({
           resErrorMessage.email = res.message.email;
           resErrorMessage.password = res.message.password;
         } else {
-          router.push({ path: "/topview" });
+          router.push({ path: "/" });
         }
       } catch (error) {
         console.log(error);
