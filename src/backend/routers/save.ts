@@ -37,7 +37,7 @@ router.post("/savemynutrients", authenticate, (req, res) => {
   });
 });
 
-router.post("/getmydata", authenticate, (req, res) => {
+router.get("/getmydata", authenticate, (req, res) => {
   const sql = "SELECT * FROM saved_data WHERE user_id=?";
   connection.query(sql, [req.body.userId], (err, result) => {
     if (err) throw err;
@@ -45,7 +45,7 @@ router.post("/getmydata", authenticate, (req, res) => {
   });
 });
 
-router.post("/getmynutrients", authenticate, (req, res) => {
+router.get("/getmynutrients", authenticate, (req, res) => {
   const sql = "SELECT * FROM saved_nutrients WHERE saved_data_id=?";
   connection.query(sql, [req.body.savedDataId], (err, result) => {
     if (err) throw err;
