@@ -12,7 +12,7 @@
         />
         <!-- </div>
         <div class="search-btn"> -->
-        <AppProcessingButton buttonText="検索" />
+        <!-- <AppProcessingButton buttonText="検索" /> -->
         <!-- </div> -->
       </div>
       <div class="list-wrapper">
@@ -22,10 +22,14 @@
             <th>タイトル</th>
             <th>更新日時</th>
           </tr>
-          <tr class="my-data" v-for="state in states" :key="state.savedDataId">
-            <td>{{ state.savedDataId }}</td>
-            <td>{{ state.title }}</td>
-            <td>{{ state.updatedAt }}</td>
+          <tr
+            class="my-data"
+            v-for="data in filteredTitles"
+            :key="data.savedDataId"
+          >
+            <td>{{ data.savedDataId }}</td>
+            <td>{{ data.title }}</td>
+            <td>{{ data.updatedAt }}</td>
           </tr>
         </table>
       </div>
@@ -38,11 +42,11 @@
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import { MyData } from "@/types/task";
-import { defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 import { useStore } from "vuex";
 
 export default defineComponent({
-  components: { BaseInput, AppProcessingButton },
+  components: { BaseInput },
   setup() {
     const store = useStore();
 
@@ -59,7 +63,18 @@ export default defineComponent({
       }
     };
     created();
-    return { states, searchWord };
+
+    const filteredTitles = computed(() => {
+      let titles = [];
+      for (let i in states) {
+        if (states[i].title.indexOf(searchWord.value) !== -1) {
+          titles.push(states[i]);
+        }
+      }
+      return titles;
+    });
+
+    return { states, searchWord, filteredTitles };
   },
 });
 </script>
