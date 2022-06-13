@@ -18,18 +18,18 @@
       <div class="list-wrapper">
         <table>
           <tr class="table-title">
-            <th>データID</th>
-            <th>タイトル</th>
-            <th>更新日時</th>
+            <th class="data-id">データID</th>
+            <th class="title">タイトル</th>
+            <th class="updated">更新日時</th>
           </tr>
           <tr
             class="my-data"
             v-for="data in filteredTitles"
             :key="data.savedDataId"
           >
-            <td>{{ data.savedDataId }}</td>
-            <td>{{ data.title }}</td>
-            <td>{{ data.updatedAt }}</td>
+            <td class="data-id">{{ data.savedDataId }}</td>
+            <td class="title">{{ data.title }}</td>
+            <td class="updated">{{ data.updatedAt }}</td>
           </tr>
         </table>
       </div>
@@ -39,7 +39,6 @@
 </template>
 
 <script lang="ts">
-import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import { MyData } from "@/types/task";
 import { computed, defineComponent, reactive, ref } from "vue";
@@ -89,6 +88,48 @@ export default defineComponent({
     margin-left: auto;
     margin-right: auto;
     height: 100vh;
+    .search-wrapper {
+      padding: 2rem 0;
+      :deep(.input-form) {
+        width: 50%;
+        height: 35px;
+        border: 1px solid #dcdcdc;
+        font-size: 150%;
+      }
+    }
+    .list-wrapper {
+      width: 95%;
+      margin-left: auto;
+      margin-right: auto;
+      padding-bottom: 2rem;
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 1rem;
+        .title,
+        .updated {
+          text-align: left;
+        }
+        .table-title {
+          border-bottom: 0.1rem solid #d1d1d1;
+          border-top: 0.1rem solid #d1d1d1;
+          .data-id {
+            width: 15%;
+          }
+          .title {
+            width: 55%;
+          }
+        }
+        .my-data {
+          height: 4rem;
+          border-bottom: 0.1rem solid #d1d1d1;
+          .data-id,
+          .title {
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
   }
 }
 </style>
