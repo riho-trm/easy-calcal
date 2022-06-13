@@ -85,7 +85,7 @@ const routes: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: "/mydatadetail",
+    path: "/mydatadetail/:id",
     name: "MyDataDetail",
     component: MyDataDetail,
     meta: {
