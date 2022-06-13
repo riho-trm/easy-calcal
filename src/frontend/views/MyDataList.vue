@@ -28,7 +28,9 @@
             :key="data.savedDataId"
           >
             <td class="data-id">{{ data.savedDataId }}</td>
-            <td class="title">{{ data.title }}</td>
+            <td class="title">
+              <router-link to="/mydatadetail">{{ data.title }}</router-link>
+            </td>
             <td class="updated">{{ data.updatedAt }}</td>
           </tr>
         </table>
@@ -126,6 +128,10 @@ export default defineComponent({
           .data-id,
           .title {
             font-size: 1.5rem;
+          }
+          a {
+            text-decoration: none;
+            color: #2c3e50;
           }
         }
       }
