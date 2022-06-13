@@ -94,6 +94,10 @@ export default createStore({
 
         return list;
       },
+    // myデータ一覧を取得
+    getMyDataList(state) {
+      return state.myDataList;
+    },
   },
 
   // ミューテーション
@@ -159,9 +163,8 @@ export default createStore({
       state.estimatedAmountList.splice(payload, 1);
     },
     // myデータを格納
-    setMydata(state, payload: MyData[]) {
+    setMyData(state, payload: MyData[]) {
       state.myDataList = payload;
-      console.log(state.myDataList);
     },
   },
 
@@ -340,7 +343,7 @@ export default createStore({
       }
     },
     // 保存されたmyデータを取得
-    async getmydatalist(context) {
+    async getmydata(context) {
       try {
         const savedDataRes = await axios.get(
           "http://localhost:3000/save/getmydata",
@@ -383,12 +386,12 @@ export default createStore({
             title: data.title,
             memo: data.memo,
             url: data.url,
-            createdAt: data.created_at,
-            updatedAt: data.updated_at,
+            createdAt: new Date(Date.parse(data.created_at)).toLocaleString(),
+            updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
             myNutrients: myNutrients,
           });
         }
-        context.commit("setMydata", payload);
+        context.commit("setMyData", payload);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log(errorMessage);
