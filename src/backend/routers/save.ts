@@ -39,17 +39,18 @@ router.post("/savemynutrients", authenticate, (req, res) => {
 
 router.get("/getmydata", authenticate, (req, res) => {
   const sql = "SELECT * FROM saved_data WHERE user_id=?";
-  connection.query(sql, [req.body.userId], (err, result) => {
+  // getメソッドで絞り込み条件を渡す際にはqueryに渡す
+  connection.query(sql, [req.query.userId], (err, result) => {
     if (err) throw err;
-    res.json({ status: "success", result: result });
+    res.json({ status: "success", myData: result });
   });
 });
 
 router.get("/getmynutrients", authenticate, (req, res) => {
-  const sql = "SELECT * FROM saved_nutrients WHERE saved_data_id=?";
-  connection.query(sql, [req.body.savedDataId], (err, result) => {
+  const sql = "SELECT * FROM saved_nutrients WHERE saved_data_id in (?)";
+  connection.query(sql, [req.query.savedDataId], (err, result) => {
     if (err) throw err;
-    res.json({ status: "success", result: result });
+    res.json({ status: "success", myNutrients: result });
   });
 });
 
