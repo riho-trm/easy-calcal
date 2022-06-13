@@ -11,7 +11,7 @@
       <AppRoutingButton
         class="btn my-data-btn"
         buttonText="Myデータ"
-        routing="mydata"
+        routing="mydatalist"
       />
     </div>
   </div>

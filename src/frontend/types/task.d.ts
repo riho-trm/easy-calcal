@@ -139,8 +139,23 @@ export interface TotalNutrient {
 }
 
 export interface Selected {
-  [index: striing]: string | number;
+  [index: string]: string | number;
   label: string;
   unit: string;
   standardQuantity: number;
+}
+
+export interface MyData {
+  [index: string]: number | string | date;
+  savedDataId: number;
+  title: string;
+  memo: string;
+  url: string;
+  createdAt: date;
+  updatedAt: date;
+  myNutrients: Array<{
+    savedNutrientsId: number;
+    nutrientId: number;
+    quantity: number;
+  }>;
 }

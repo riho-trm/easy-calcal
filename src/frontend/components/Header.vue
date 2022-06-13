@@ -6,7 +6,7 @@
       </div>
       <div class="link">
         <router-link to="/calccalories">カロリー計算</router-link>
-        <router-link to="/mypage">Myデータ</router-link>
+        <router-link to="/mydatalist">Myデータ</router-link>
         <router-link to="/mypage">マイページ</router-link>
         <router-link to="/adminmenu" v-if="isAdmin === 1"
           >管理者メニュー</router-link

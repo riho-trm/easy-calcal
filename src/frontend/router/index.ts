@@ -8,6 +8,7 @@ import EstimatedAmountList from "../views/EstimatedAmountList.vue";
 import EditEstimatedAmount from "../views/EditEstimatedAmount.vue";
 import CalcCalories from "../views/CalcCalories.vue";
 import MyPage from "../views/MyPage.vue";
+import MyDataList from "../views/MyDataList.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
@@ -70,6 +71,14 @@ const routes: Array<RouteRecordRaw> = [
     path: "/calccalories",
     name: "CalcCalories",
     component: CalcCalories,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/mydatalist",
+    name: "MyDataList",
+    component: MyDataList,
     meta: {
       requiresAuth: true,
     },

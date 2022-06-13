@@ -1,7 +1,7 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import axios from "axios";
-import { EstimatedAmountList, Nutrients } from "@/types/task";
+import { EstimatedAmountList, MyData, Nutrients } from "@/types/task";
 
 export default createStore({
   // ステート
@@ -24,6 +24,8 @@ export default createStore({
     nutrients: [] as Array<Nutrients>,
     // 目安量一覧
     estimatedAmountList: [] as Array<EstimatedAmountList>,
+    // Myデータ一覧
+    myDataList: [] as Array<MyData>,
   },
 
   // ゲッター
@@ -92,6 +94,10 @@ export default createStore({
 
         return list;
       },
+    // myデータ一覧を取得
+    getMyDataList(state) {
+      return state.myDataList;
+    },
   },
 
   // ミューテーション
@@ -155,6 +161,10 @@ export default createStore({
     // 目安量一覧から対象のデータを削除
     deleteEstimatedAmountList(state, payload) {
       state.estimatedAmountList.splice(payload, 1);
+    },
+    // myデータを格納
+    setMyData(state, payload: MyData[]) {
+      state.myDataList = payload;
     },
   },
 
@@ -329,7 +339,62 @@ export default createStore({
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log(error);
-
+        return errorMessage;
+      }
+    },
+    // 保存されたmyデータを取得
+    async getmydata(context) {
+      try {
+        const savedDataRes = await axios.get(
+          "http://localhost:3000/save/getmydata",
+          {
+            params: { userId: this.state.auth.userId },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const savedDataId: number[] = [];
+        savedDataRes.data.myData.forEach((data: { id: number }) =>
+          savedDataId.push(data.id)
+        );
+        const savedNutrientsRes = await axios.get(
+          "http://localhost:3000/save/getmynutrients",
+          {
+            params: { savedDataId: savedDataId },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const savedData = savedDataRes.data.myData;
+        const savedNutrients = savedNutrientsRes.data.myNutrients;
+        const payload = [];
+        for (const data of savedData) {
+          const myNutrients = [];
+          for (const nutrient of savedNutrients) {
+            if (nutrient.saved_data_id === data.id) {
+              myNutrients.push({
+                savedNutrientsId: nutrient.id,
+                nutrientId: nutrient.nutrient_id,
+                quantity: nutrient.quantity,
+              });
+            }
+          }
+          payload.push({
+            savedDataId: data.id,
+            title: data.title,
+            memo: data.memo,
+            url: data.url,
+            createdAt: new Date(Date.parse(data.created_at)).toLocaleString(),
+            updatedAt: new Date(Date.parse(data.updated_at)).toLocaleString(),
+            myNutrients: myNutrients,
+          });
+        }
+        context.commit("setMyData", payload);
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        console.log(errorMessage);
         return errorMessage;
       }
     },

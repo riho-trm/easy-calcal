@@ -31,11 +31,26 @@ router.post("/savemynutrients", authenticate, (req, res) => {
   const sql =
     // 配列でinsertするときのvaluesは?ひとつのみ
     "INSERT INTO saved_nutrients (saved_data_id, nutrient_id, quantity) VALUES ?";
-  console.log(req.body);
-  console.log(req.body[1]);
   connection.query(sql, [req.body], (err, result) => {
     if (err) throw err;
     res.json({ status: "success", res: result });
+  });
+});
+
+router.get("/getmydata", authenticate, (req, res) => {
+  const sql = "SELECT * FROM saved_data WHERE user_id=?";
+  // getメソッドで絞り込み条件を渡す際にはqueryに渡す
+  connection.query(sql, [req.query.userId], (err, result) => {
+    if (err) throw err;
+    res.json({ status: "success", myData: result });
+  });
+});
+
+router.get("/getmynutrients", authenticate, (req, res) => {
+  const sql = "SELECT * FROM saved_nutrients WHERE saved_data_id in (?)";
+  connection.query(sql, [req.query.savedDataId], (err, result) => {
+    if (err) throw err;
+    res.json({ status: "success", myNutrients: result });
   });
 });
 
