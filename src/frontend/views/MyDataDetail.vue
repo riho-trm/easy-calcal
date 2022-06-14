@@ -46,8 +46,12 @@
                     name="quantity"
                     type="text"
                     v-model="data.quantity"
-                    @onBlur="
-                      calcNutrient($event, index, data.nutrient.food_name)
+                    @change="
+                      calcNutrient(
+                        Number($event.target.value),
+                        index,
+                        data.nutrient.food_name
+                      )
                     "
                   />
                   <p class="gram">g</p>
@@ -58,8 +62,8 @@
                   buttonText="目安量で入力"
                   @processing="
                     openInputEstimatedModal(
-                      food.nutrient.food_name,
-                      food.estimatedIdList,
+                      data.nutrient.food_name,
+                      data.estimatedIdList,
                       index
                     )
                   "
@@ -180,8 +184,10 @@
 import ConfirmationModal from "@/components/ConfirmationModal.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
+import InputEstimatedModal from "@/components/InputEstimatedModal.vue";
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import BaseLabel from "@/components/presentational/BaseLabel.vue";
+import ShowAllNutrientModal from "@/components/ShowAllNutrientModal.vue";
 import {
   DefaultMyData,
   DefaultMyNutrients,
@@ -192,7 +198,7 @@ import {
   Nutrients,
   TotalNutrient,
 } from "@/types/task";
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import { defineComponent, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SimpleTypeahead from "vue3-simple-typeahead";
 import { useStore } from "vuex";
@@ -205,6 +211,8 @@ export default defineComponent({
     AppProcessingButton,
     AppCancelButton,
     ConfirmationModal,
+    InputEstimatedModal,
+    ShowAllNutrientModal,
   },
   setup() {
     const store = useStore();
@@ -301,12 +309,20 @@ export default defineComponent({
     // 削除済み食品一覧を保存
     let deletedMyNutirients = reactive({}) as DeletedMyNutrients;
 
+    const resetTotalNutrient = () => {
+      for (const key in totalNutrient) {
+        totalNutrient[key] = 0;
+      }
+    };
+
     const created = async () => {
       editedMyData.isEdited = false;
       editedMyNutrients.isEdited = false;
       deletedMyNutirients.isDeleted = false;
 
-      sugestItems = await store.getters.getSugestList;
+      sugestItems = store.getters.getSugestList;
+      console.log(sugestItems);
+
       const targetId = Number(route.params.id);
       const myDataRes: MyData = await store.getters.getMyData(targetId);
       // defaultMyData初期設定
@@ -329,26 +345,172 @@ export default defineComponent({
           nutrient: nutrientRes,
         });
       }
-      console.log(defaultMyData);
-      console.log(defaultMyNutrients);
+      // totalNutrient初期設定
+      for (const totalKey in totalNutrient) {
+        for (const nutrient of defaultMyNutrients) {
+          for (const nutrientKey in nutrient.nutrient) {
+            if (nutrientKey === totalKey) {
+              const plusNutrient =
+                Math.round(
+                  (totalNutrient[totalKey] += nutrient.nutrient[
+                    nutrientKey
+                  ] as number) * 100
+                ) / 100;
+              totalNutrient[totalKey] = plusNutrient;
+            }
+          }
+        }
+      }
+      console.log(editedMyNutrients);
+      console.log(sugestItems);
     };
     created();
-
-    const resetTotalNutrient = () => {
-      for (const key in totalNutrient) {
-        totalNutrient[key] = 0;
-      }
-    };
-    const resetItem = () => {
-      defaultMyNutrients.splice(0);
-      resetTotalNutrient();
-    };
 
     const onUpdateMyData = () => {
       editedMyData.isEdited = true;
       editedMyData.title = defaultMyData.title;
       editedMyData.memo = defaultMyData.memo;
       editedMyData.url = defaultMyData.url;
+    };
+
+    const calcNutrient = (
+      quantity: number,
+      index: number,
+      foodName: string
+    ) => {
+      console.log("calcNutrientがよばれた");
+      const res: Nutrients = store.getters.calcNutrientsQuanrity(
+        foodName,
+        quantity
+      );
+      defaultMyNutrients[index].nutrient = res;
+      resetTotalNutrient();
+      for (const totalKey in totalNutrient) {
+        for (const nutrient of defaultMyNutrients) {
+          for (const nutrientKey in nutrient.nutrient) {
+            if (nutrientKey === totalKey) {
+              const plusNutrient =
+                Math.round(
+                  (totalNutrient[totalKey] += nutrient.nutrient[
+                    nutrientKey
+                  ] as number) * 100
+                ) / 100;
+              totalNutrient[totalKey] = plusNutrient;
+            }
+          }
+        }
+      }
+      updateEditedNutrients(
+        defaultMyNutrients[index].savedNutrientsId,
+        quantity
+      );
+    };
+    const updateEditedNutrients = (
+      savedNutrientsId: number,
+      newQuantity: number
+    ) => {
+      console.log("updateEditedNutrientsがよばれた");
+
+      editedMyNutrients.isEdited = true;
+
+      let hasId = false;
+      if (editedMyNutrients.editedData === undefined) {
+        editedMyNutrients.editedData = [];
+        editedMyNutrients.editedData.push({
+          savedNutrientsId: savedNutrientsId,
+          quantity: newQuantity,
+        });
+      } else if (savedNutrientsId === -100) {
+        return;
+      } else {
+        for (const data of editedMyNutrients.editedData) {
+          if (data.savedNutrientsId === savedNutrientsId) {
+            data.quantity = newQuantity;
+            hasId = true;
+          }
+        }
+        if (!hasId) {
+          editedMyNutrients.editedData.push({
+            savedNutrientsId: savedNutrientsId,
+            quantity: newQuantity,
+          });
+        }
+      }
+      console.log(editedMyNutrients);
+    };
+
+    const deleteItem = (index: number) => {
+      for (const totalKey in totalNutrient) {
+        for (const stateKey in defaultMyNutrients[index].nutrient) {
+          if (totalKey === stateKey) {
+            const subNutrient =
+              Math.round(
+                (totalNutrient[totalKey] -= defaultMyNutrients[index].nutrient[
+                  stateKey
+                ] as number) * 100
+              ) / 100;
+            totalNutrient[totalKey] = subNutrient;
+          }
+        }
+      }
+      updateDeletedMyNutrients(defaultMyNutrients[index].savedNutrientsId);
+      defaultMyNutrients.splice(index, 1);
+    };
+    const updateDeletedMyNutrients = (savedNutrientsId: number) => {
+      // 削除済みリスト追加処理
+      if (savedNutrientsId === -100) {
+        return;
+      } else if (deletedMyNutirients.savedNutrientsId === undefined) {
+        deletedMyNutirients.isDeleted = true;
+        deletedMyNutirients.savedNutrientsId = [];
+        deletedMyNutirients.savedNutrientsId.push(savedNutrientsId);
+      } else {
+        deletedMyNutirients.isDeleted = true;
+        deletedMyNutirients.savedNutrientsId.push(savedNutrientsId);
+      }
+      // 削除したデータがeditedMyNutrientsにある場合削除
+      for (const index in editedMyNutrients.editedData) {
+        if (
+          editedMyNutrients.editedData[index].savedNutrientsId ===
+          savedNutrientsId
+        ) {
+          editedMyNutrients.editedData.splice(Number(index), 1);
+        }
+        if (editedMyNutrients.editedData.length === 0) {
+          editedMyNutrients.isEdited = false;
+        }
+      }
+    };
+
+    const openInputEstimatedModal = (
+      foodName: string,
+      estimatedIdList: [],
+      index: number
+    ) => {
+      inputEstimatedModalData.inputEstimatedModalVisible = true;
+      inputEstimatedModalData.foodName = foodName;
+      inputEstimatedModalData.estimatedIdList = estimatedIdList;
+      inputEstimatedModalData.stateIndex = index;
+    };
+    const setQuantity = (
+      calculatedQuantity: number,
+      index: number,
+      foodName: string
+    ) => {
+      console.log(calculatedQuantity, index);
+      defaultMyNutrients[index].quantity = calculatedQuantity;
+      calcNutrient(calculatedQuantity, index, foodName);
+      closeInputEstimatedModal();
+    };
+    const closeInputEstimatedModal = () => {
+      inputEstimatedModalData.inputEstimatedModalVisible = false;
+    };
+
+    const openShowAllNutrientModal = () => {
+      showAllNutrientModalVisible.value = true;
+    };
+    const closeShowAllNutrientModal = () => {
+      showAllNutrientModalVisible.value = false;
     };
 
     return {
@@ -365,7 +527,17 @@ export default defineComponent({
       editedMyNutrients,
       deletedMyNutirients,
 
+      resetTotalNutrient,
       onUpdateMyData,
+      calcNutrient,
+      updateEditedNutrients,
+      deleteItem,
+      updateDeletedMyNutrients,
+      openInputEstimatedModal,
+      setQuantity,
+      closeInputEstimatedModal,
+      openShowAllNutrientModal,
+      closeShowAllNutrientModal,
     };
   },
 });
