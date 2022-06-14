@@ -159,3 +159,36 @@ export interface MyData {
     quantity: number;
   }>;
 }
+
+// MyDataDetailの型
+export interface DefaultMyData {
+  [index: string]: number | string;
+  savedDataId: number;
+  title: string;
+  memo: string;
+  url: string;
+}
+export interface DefaultMyNutrients {
+  [index: string]: number | Array<number> | Nutrients;
+  savedNutrientsId: number;
+  quantity: number;
+  estimatedIdList: Array<number>;
+  nitrients: Nutrients;
+}
+export interface EditedMyData {
+  isEdited: boolean;
+  title: string;
+  memo: string;
+  url: string;
+}
+export interface EditedMyNutrients {
+  isEdited: boolean;
+  editedData: Array<{
+    savedNutrientsId: number;
+    quantity: number;
+  }>;
+}
+export interface DeletedMyNutrients {
+  isDeleted: boolean;
+  savedNutrientsId: Array<number>;
+}
