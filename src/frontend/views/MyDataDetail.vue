@@ -7,8 +7,10 @@
           v-if="isEdit"
           id="my-data-title"
           name="my-data-title"
+          placeholder="タイトル"
           type="text"
           v-model="defaultMyData.title"
+          @change="onUpdateMyData"
         />
       </div>
       <div class="flex-wrapper">
@@ -90,7 +92,7 @@
           </div>
 
           <div class="display-memo">
-            <BaseLabel id="memo">memo</BaseLabel>
+            <BaseLabel class="label" id="memo">memo</BaseLabel>
             <br />
             <span v-if="!isEdit">{{ defaultMyData.memo }}</span>
             <textarea
@@ -100,10 +102,11 @@
               name="memo"
               type="text"
               v-model="defaultMyData.memo"
+              @change="onUpdateMyData"
             ></textarea>
           </div>
           <div class="display-url">
-            <BaseLabel id="url">URL</BaseLabel>
+            <BaseLabel class="label" id="url">URL</BaseLabel>
             <br />
             <span v-if="!isEdit">{{ defaultMyData.url }}</span>
             <BaseInput
@@ -112,6 +115,7 @@
               name="url"
               type="text"
               v-model="defaultMyData.url"
+              @change="onUpdateMyData"
             />
           </div>
         </div>
@@ -131,7 +135,7 @@
           v-if="!isEdit"
           class="edit-btn"
           buttonText="編集"
-          @processing="openSaveCalculatedModal"
+          @processing="isEdit = true"
         />
         <AppProcessingButton
           v-if="isEdit"
@@ -188,7 +192,7 @@ import {
   Nutrients,
   TotalNutrient,
 } from "@/types/task";
-import { defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SimpleTypeahead from "vue3-simple-typeahead";
 import { useStore } from "vuex";
@@ -298,6 +302,10 @@ export default defineComponent({
     let deletedMyNutirients = reactive({}) as DeletedMyNutrients;
 
     const created = async () => {
+      editedMyData.isEdited = false;
+      editedMyNutrients.isEdited = false;
+      deletedMyNutirients.isDeleted = false;
+
       sugestItems = await store.getters.getSugestList;
       const targetId = Number(route.params.id);
       const myDataRes: MyData = await store.getters.getMyData(targetId);
@@ -336,6 +344,13 @@ export default defineComponent({
       resetTotalNutrient();
     };
 
+    const onUpdateMyData = () => {
+      editedMyData.isEdited = true;
+      editedMyData.title = defaultMyData.title;
+      editedMyData.memo = defaultMyData.memo;
+      editedMyData.url = defaultMyData.url;
+    };
+
     return {
       defaultMyData,
       defaultMyNutrients,
@@ -349,6 +364,8 @@ export default defineComponent({
       editedMyData,
       editedMyNutrients,
       deletedMyNutirients,
+
+      onUpdateMyData,
     };
   },
 });
@@ -372,9 +389,11 @@ export default defineComponent({
     height: 100vh;
     .title {
       padding-top: 2rem;
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #39587d;
+      span {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #39587d;
+      }
     }
     .flex-wrapper {
       display: flex;
@@ -494,9 +513,21 @@ export default defineComponent({
         .display-memo,
         .display-url {
           padding-bottom: 1rem;
+          .label {
+            margin-bottom: 0.5rem;
+          }
           :deep(label) {
             font-weight: bold;
             color: #39587d;
+          }
+        }
+        .display-memo {
+          textarea {
+            background-color: #fff;
+            border: 1px solid #dcdcdc;
+            box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+            border-radius: 3px;
+            font-size: 100%;
           }
         }
       }
