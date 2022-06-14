@@ -98,6 +98,10 @@ export default createStore({
     getMyDataList(state) {
       return state.myDataList;
     },
+    // 渡されたidに基づくmyデータを1件取得
+    getMyData: (state) => (id: number) => {
+      return state.myDataList.find((data) => data.savedDataId === id);
+    },
   },
 
   // ミューテーション
