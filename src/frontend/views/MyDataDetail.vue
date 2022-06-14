@@ -11,124 +11,134 @@
           v-model="defaultMyData.title"
         />
       </div>
-      <div class="input-nutrients">
-        <div class="nutrients-search-form">
-          <SimpleTypeahead
-            v-if="isEdit"
-            id="food-name-input"
-            placeholder="食材名を検索"
-            :items="sugestItems"
-            :minInputLength="1"
-            @selectItem="selectItem"
-            ref="typeahead"
-          />
-        </div>
-        <div class="input-quantity">
-          <div
-            class="quantity-list"
-            v-for="(data, index) in defaultMyNutrients"
-            :key="index"
-          >
-            <div class="icon-btn" @click="deleteItem(index)">
-              <fa icon="trash-can" />
-            </div>
-            <div class="food-name">{{ data.nutrient.food_name }}</div>
-            <div class="food-input">
-              <div class="gram-input">
-                <span v-if="!isEdit">{{ data.quantity }}</span>
-                <BaseInput
-                  v-if="isEdit"
-                  id="quantity-input"
-                  class="quantity-input"
-                  name="quantity"
-                  type="text"
-                  v-model="data.quantity"
-                  @onBlur="calcNutrient($event, index, data.nutrient.food_name)"
-                />
-                <p class="gram">g</p>
+      <div class="flex-wrapper">
+        <div class="input-nutrients">
+          <div class="nutrients-search-form">
+            <SimpleTypeahead
+              v-if="isEdit"
+              id="food-name-input"
+              placeholder="食材名を検索"
+              :items="sugestItems"
+              :minInputLength="1"
+              @selectItem="selectItem"
+              ref="typeahead"
+            />
+          </div>
+          <div class="input-quantity">
+            <div
+              class="quantity-list"
+              v-for="(data, index) in defaultMyNutrients"
+              :key="index"
+            >
+              <div class="icon-btn" @click="deleteItem(index)">
+                <fa icon="trash-can" />
               </div>
-              <AppProcessingButton
-                v-if="data.estimatedIdList.length >= 1"
-                class="btn input-estimated-btn"
-                buttonText="目安量で入力"
-                @processing="
-                  openInputEstimatedModal(
-                    food.nutrient.food_name,
-                    food.estimatedIdList,
-                    index
-                  )
-                "
-              />
+              <div class="food-name">{{ data.nutrient.food_name }}</div>
+              <div class="food-input">
+                <div class="gram-input">
+                  <span v-if="!isEdit">{{ data.quantity }}</span>
+                  <BaseInput
+                    v-if="isEdit"
+                    id="quantity-input"
+                    class="quantity-input"
+                    name="quantity"
+                    type="text"
+                    v-model="data.quantity"
+                    @onBlur="
+                      calcNutrient($event, index, data.nutrient.food_name)
+                    "
+                  />
+                  <p class="gram">g</p>
+                </div>
+                <AppProcessingButton
+                  v-if="data.estimatedIdList.length >= 1"
+                  class="input-estimated-btn"
+                  buttonText="目安量で入力"
+                  @processing="
+                    openInputEstimatedModal(
+                      food.nutrient.food_name,
+                      food.estimatedIdList,
+                      index
+                    )
+                  "
+                />
+              </div>
             </div>
+          </div>
+        </div>
+
+        <div class="display-informations">
+          <div class="display-nutrients">
+            <div class="display-nutrients-title">総カロリーと三大栄養素</div>
+            <div class="calculated-nutrient">
+              <div class="cn carolies">
+                エネルギー：{{ totalNutrient.calories }}kcal
+              </div>
+              <div class="cn protain">
+                たんぱく質：{{ totalNutrient.protain }}g
+              </div>
+              <div class="cn fat">脂質：{{ totalNutrient.fat }}g</div>
+              <div class="cn carbon">
+                炭水化物：{{ totalNutrient.carbohydrate }}g
+              </div>
+            </div>
+            <AppProcessingButton
+              class="show-all-nutrient-btn"
+              buttonText="全ての栄養素を見る"
+              @processing="openShowAllNutrientModal"
+            />
+          </div>
+
+          <div class="display-memo">
+            <BaseLabel id="memo">memo</BaseLabel>
+            <br />
+            <span v-if="!isEdit">{{ defaultMyData.memo }}</span>
+            <textarea
+              v-if="isEdit"
+              rows="5"
+              id="memo"
+              name="memo"
+              type="text"
+              v-model="defaultMyData.memo"
+            ></textarea>
+          </div>
+          <div class="display-url">
+            <BaseLabel id="url">URL</BaseLabel>
+            <br />
+            <span v-if="!isEdit">{{ defaultMyData.url }}</span>
+            <BaseInput
+              v-if="isEdit"
+              id="url"
+              name="url"
+              type="text"
+              v-model="defaultMyData.url"
+            />
           </div>
         </div>
       </div>
-
-      <div class="display-informations">
-        <div class="display-nutrients">
-          <div class="display-nutrients-title">総カロリーと三大栄養素</div>
-          <div class="calculated-nutrient">
-            <div class="cn carolies">
-              エネルギー：{{ totalNutrient.calories }}kcal
-            </div>
-            <div class="cn protain">
-              たんぱく質：{{ totalNutrient.protain }}g
-            </div>
-            <div class="cn fat">脂質：{{ totalNutrient.fat }}g</div>
-            <div class="cn carbon">
-              炭水化物：{{ totalNutrient.carbohydrate }}g
-            </div>
-          </div>
-          <AppProcessingButton
-            class="btn show-all-nutrient-btn"
-            buttonText="全ての栄養素を見る"
-            @processing="openShowAllNutrientModal"
-          />
-        </div>
-
-        <div class="display-memo">
-          <BaseLabel id="memo">memo</BaseLabel>
-          <span v-if="!isEdit">{{ defaultMyData.memo }}</span>
-          <textarea
-            v-if="isEdit"
-            rows="5"
-            id="memo"
-            name="memo"
-            type="text"
-            v-model="defaultMyData.memo"
-          ></textarea>
-        </div>
-        <div class="display-url">
-          <BaseLabel id="url">URL</BaseLabel>
-          <span v-if="!isEdit">{{ defaultMyData.url }}</span>
-          <BaseInput
-            v-if="isEdit"
-            id="url"
-            name="url"
-            type="text"
-            v-model="defaultMyData.url"
-          />
-        </div>
-        <div class="btn">
-          <AppProcessingButton
-            class="btn delete-btn"
-            buttonText="削除"
-            @processing="openSaveCalculatedModal"
-          />
-          <AppCancelButton buttonText="戻る" @cancel="showModal" />
-          <AppProcessingButton
-            v-if="!isEdit"
-            class="btn edit-btn"
-            buttonText="編集"
-            @processing="openSaveCalculatedModal"
-          />
-          <AppProcessingButton
-            v-if="isEdit"
-            class="btn save-btn"
-            buttonText="保存"
-            @processing="openSaveCalculatedModal"
-          />
-        </div>
+      <div class="btn">
+        <AppProcessingButton
+          class="delete-btn"
+          buttonText="削除"
+          @processing="openSaveCalculatedModal"
+        />
+        <AppCancelButton
+          class="return-btn"
+          buttonText="戻る"
+          @cancel="showModal"
+        />
+        <AppProcessingButton
+          v-if="!isEdit"
+          class="edit-btn"
+          buttonText="編集"
+          @processing="openSaveCalculatedModal"
+        />
+        <AppProcessingButton
+          v-if="isEdit"
+          class="save-btn"
+          buttonText="保存"
+          @processing="openSaveCalculatedModal"
+        />
       </div>
     </div>
 
@@ -344,4 +354,174 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep(.input-form) {
+  width: 50%;
+  height: 35px;
+  border: 1px solid #dcdcdc;
+  font-size: 150%;
+}
+
+.top-wrapper {
+  background-color: #f0f9ff;
+  min-height: 100vh;
+  .container {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100vh;
+    .title {
+      padding-top: 2rem;
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #39587d;
+    }
+    .flex-wrapper {
+      display: flex;
+      padding-bottom: 2rem;
+      .input-nutrients {
+        width: 50%;
+        .nutrients-search-form {
+          padding-top: 2rem;
+          :deep(.simple-typeahead) {
+            position: relative;
+            .simple-typeahead-input {
+              width: 50%;
+              height: 35px;
+              border: 1px solid #dcdcdc;
+              box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+              border-radius: 3px;
+              margin-bottom: 1rem;
+              font-size: 150%;
+              background-color: white;
+            }
+            .simple-typeahead-list {
+              position: absolute;
+              top: 35px;
+              left: 25%;
+              width: 50%;
+              max-height: 400px;
+              overflow-y: auto;
+              border-bottom: 0.1rem solid #d1d1d1;
+              z-index: 9;
+              margin-left: auto;
+              margin-right: auto;
+              .simple-typeahead-list-item {
+                cursor: pointer;
+                border-bottom: 0.1rem solid #d1d1d1;
+                background-color: #fafafa;
+                padding: 0.6rem 1rem;
+                border-left: 0.1rem solid #d1d1d1;
+                border-right: 0.1rem solid #d1d1d1;
+              }
+              .simple-typeahead-list-item-active {
+                background-color: #e1e1e1;
+              }
+            }
+          }
+        }
+
+        .input-quantity {
+          width: 95%;
+          margin-left: auto;
+          margin-right: auto;
+          background-color: white;
+          box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+          border-radius: 3px;
+          padding: 1rem;
+          .quantity-list {
+            border-bottom: 1px solid #dcdcdc;
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            .icon-btn {
+              width: 10%;
+              font-size: 2rem;
+            }
+            .food-name {
+              width: 65%;
+              font-size: 1rem;
+            }
+            .food-input {
+              width: 25%;
+              display: flex;
+              flex-direction: column;
+              :deep(.btn) {
+                font-size: 0.2rem;
+                padding: 0.1rem 0.3rem;
+                margin: 0;
+              }
+              .gram-input {
+                display: flex;
+                justify-content: center;
+                span {
+                  font-size: 1rem;
+                }
+                .gram {
+                  font-size: 1rem;
+                  margin-left: 0.3rem;
+                }
+              }
+              .input-estimated-btn {
+                margin: 0.6rem 0;
+              }
+            }
+          }
+        }
+      }
+      .display-informations {
+        width: 50%;
+        font-size: 1rem;
+        .display-nutrients {
+          padding-bottom: 1rem;
+          .display-nutrients-title {
+            font-weight: bold;
+            color: #39587d;
+            padding-top: 2rem;
+            padding-bottom: 0.5rem;
+          }
+          .calculated-nutrient {
+            padding-bottom: 0.5rem;
+            .cn {
+              padding-bottom: 0.5rem;
+            }
+          }
+          :deep(.btn) {
+            font-size: 0.8rem;
+            padding: 0.5rem 1rem;
+          }
+        }
+        .display-memo,
+        .display-url {
+          padding-bottom: 1rem;
+          :deep(label) {
+            font-weight: bold;
+            color: #39587d;
+          }
+        }
+      }
+    }
+    .btn {
+      width: 80%;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      :deep(.btn) {
+        font-size: 1rem;
+        padding: 0.5rem 2.5rem;
+        margin: 0 1rem;
+      }
+      .delete-btn {
+        :deep(.btn--color) {
+          background-color: red;
+          border: 2px solid red;
+          &:hover {
+            color: red;
+            background: #fff;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
