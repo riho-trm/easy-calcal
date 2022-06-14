@@ -66,6 +66,10 @@ export default createStore({
       const data = state.nutrients.find((data) => data.food_name === foodName);
       return data;
     },
+    // 渡されたidに基づく栄養素を1件取得
+    getNutrientById: (state) => (id: number) => {
+      return state.nutrients.find((data) => data.id === id);
+    },
     // 食材量を基に栄養量を計算
     calcNutrientsQuanrity:
       (state) => (foodName: string, foodQuantity: number) => {

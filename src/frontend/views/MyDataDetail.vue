@@ -174,6 +174,8 @@ import {
   DeletedMyNutrients,
   EditedMyData,
   EditedMyNutrients,
+  MyData,
+  Nutrients,
   TotalNutrient,
 } from "@/types/task";
 import { defineComponent, reactive, ref } from "vue";
@@ -285,10 +287,45 @@ export default defineComponent({
     // 削除済み食品一覧を保存
     let deletedMyNutirients = reactive({}) as DeletedMyNutrients;
 
-    const created = () => {
-      sugestItems = store.getters.getSugestList;
+    const created = async () => {
+      sugestItems = await store.getters.getSugestList;
+      const targetId = Number(route.params.id);
+      const myDataRes: MyData = await store.getters.getMyData(targetId);
+      // defaultMyData初期設定
+      defaultMyData.savedDataId = myDataRes.savedDataId;
+      defaultMyData.title = myDataRes.title;
+      defaultMyData.memo = myDataRes.memo;
+      defaultMyData.url = myDataRes.url;
+      // defaultMyNutrient初期設定
+      for (const data of myDataRes.myNutrients) {
+        const foodName = await store.getters.getNutrientById(data.nutrientId)
+          .food_name;
+        const nutrientRes: Nutrients =
+          await store.getters.calcNutrientsQuanrity(foodName, data.quantity);
+        const estimatedIdRes: Array<number> =
+          await store.getters.getEstimatedIdList(data.nutrientId);
+        defaultMyNutrients.push({
+          savedNutrientsId: data.savedNutrientsId,
+          quantity: data.quantity,
+          estimatedIdList: estimatedIdRes,
+          nutrient: nutrientRes,
+        });
+      }
+      console.log(defaultMyData);
+      console.log(defaultMyNutrients);
     };
     created();
+
+    const resetTotalNutrient = () => {
+      for (const key in totalNutrient) {
+        totalNutrient[key] = 0;
+      }
+    };
+    const resetItem = () => {
+      defaultMyNutrients.splice(0);
+      resetTotalNutrient();
+    };
+
     return {
       defaultMyData,
       defaultMyNutrients,
