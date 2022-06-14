@@ -2,13 +2,13 @@
   <div class="top-wrapper">
     <div class="container">
       <div class="title">
-        <span v-if="!isEdit">{{ state.title }}</span>
+        <span v-if="!isEdit">{{ defaultMyData.title }}</span>
         <BaseInput
           v-if="isEdit"
           id="my-data-title"
           name="my-data-title"
           type="text"
-          v-model="state.title"
+          v-model="defaultMyData.title"
         />
       </div>
       <div class="input-nutrients">
@@ -26,29 +26,29 @@
         <div class="input-quantity">
           <div
             class="quantity-list"
-            v-for="(data, index) in state"
+            v-for="(data, index) in defaultMyNutrients"
             :key="index"
           >
             <div class="icon-btn" @click="deleteItem(index)">
               <fa icon="trash-can" />
             </div>
-            <div class="food-name">{{ food.nutrient.food_name }}</div>
+            <div class="food-name">{{ data.nutrient.food_name }}</div>
             <div class="food-input">
               <div class="gram-input">
-                <span v-if="!isEdit">{{ あとで入力 }}</span>
+                <span v-if="!isEdit">{{ data.quantity }}</span>
                 <BaseInput
                   v-if="isEdit"
                   id="quantity-input"
                   class="quantity-input"
                   name="quantity"
                   type="text"
-                  v-model="food.quantity"
-                  @onBlur="calcNutrient($event, index, food.nutrient.food_name)"
+                  v-model="data.quantity"
+                  @onBlur="calcNutrient($event, index, data.nutrient.food_name)"
                 />
                 <p class="gram">g</p>
               </div>
               <AppProcessingButton
-                v-if="food.estimatedIdList.length >= 1"
+                v-if="data.estimatedIdList.length >= 1"
                 class="btn input-estimated-btn"
                 buttonText="目安量で入力"
                 @processing="
@@ -88,25 +88,25 @@
 
         <div class="display-memo">
           <BaseLabel id="memo">memo</BaseLabel>
-          <span v-if="!isEdit">{{ あとで入力 }}</span>
+          <span v-if="!isEdit">{{ defaultMyData.memo }}</span>
           <textarea
             v-if="isEdit"
             rows="5"
             id="memo"
             name="memo"
             type="text"
-            v-model="memo"
+            v-model="defaultMyData.memo"
           ></textarea>
         </div>
         <div class="display-url">
           <BaseLabel id="url">URL</BaseLabel>
-          <span v-if="!isEdit">{{ あとで入力 }}</span>
+          <span v-if="!isEdit">{{ defaultMyData.url }}</span>
           <BaseInput
             v-if="isEdit"
             id="url"
             name="url"
             type="text"
-            v-model="state.unit"
+            v-model="defaultMyData.url"
           />
         </div>
         <div class="btn">

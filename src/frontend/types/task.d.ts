@@ -173,7 +173,7 @@ export interface DefaultMyNutrients {
   savedNutrientsId: number;
   quantity: number;
   estimatedIdList: Array<number>;
-  nitrients: Nutrients;
+  nitrient: Nutrients;
 }
 export interface EditedMyData {
   isEdited: boolean;
