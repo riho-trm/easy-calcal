@@ -128,7 +128,7 @@
         <AppProcessingButton
           class="delete-btn"
           buttonText="削除"
-          @processing="openSaveCalculatedModal"
+          @processing="openDeleteModal"
         />
         <AppCancelButton
           class="return-btn"
@@ -299,9 +299,9 @@ export default defineComponent({
     // 栄養素一覧モーダルを表示するためのフラグ
     let showAllNutrientModalVisible = ref(false);
     // 削除確認モーダルを表示するためのフラグ
-    let showDeleteModalVisible = ref(false);
+    let deleteModalVisible = ref(false);
     // キャンセル確認モーダルを表示するためのフラグ
-    let showCancelModalVisible = ref(false);
+    let cancelModalVisible = ref(false);
 
     // 更新関連変数
     // myデータ（メモ、タイトルなど）の更新内容を保存
@@ -576,6 +576,8 @@ export default defineComponent({
       inputEstimatedModalData.estimatedIdList = estimatedIdList;
       inputEstimatedModalData.stateIndex = index;
     };
+
+    // 目安量登録モーダル関連
     /**
      * 目安量入力モーダルで計算した値をセットし、栄養素を計算する.
      *
@@ -599,6 +601,8 @@ export default defineComponent({
     const closeInputEstimatedModal = () => {
       inputEstimatedModalData.inputEstimatedModalVisible = false;
     };
+
+    // 栄養素一覧表示モーダル関連
     /**
      * 栄養素一覧表示モーダルを開く.
      */
@@ -612,6 +616,55 @@ export default defineComponent({
       showAllNutrientModalVisible.value = false;
     };
 
+    // 削除確認モーダル関連
+    /**
+     * 削除確認モーダルを開く.
+     */
+    const openDeleteModal = () => {
+      deleteModalVisible.value = true;
+    };
+    /**
+     * 削除確認モーダルを閉じる.
+     */
+    const closeDeleteModal = () => {
+      deleteModalVisible.value = false;
+    };
+    /**
+     * myデータを削除する.
+     */
+    // const deleteMyData = () => {};
+
+    // 戻る確認モーダル関連
+    /**
+     * 戻るボタンが押された際の処理
+     *
+     * @remarks 編集中であれば戻る確認モーダルを開き、そうでなければmyデータリストに戻る
+     */
+    const onclickCancelButton = () => {
+      if (isEdit.value) {
+        deleteModalVisible.value = true;
+      } else {
+        router.push("/mydatalist");
+      }
+    };
+    /**
+     * 戻る確認モーダルを閉じる.
+     */
+    const closeCancelModal = () => {
+      deleteModalVisible.value = false;
+    };
+    /**
+     * myデータリストに遷移する.
+     */
+    const backPage = () => {
+      router.push("/mydatalist");
+    };
+
+    /**
+     * 変更データを保存する.
+     */
+    // const save = () => {};
+
     return {
       typeahead,
       defaultMyData,
@@ -621,8 +674,8 @@ export default defineComponent({
       isEdit,
       inputEstimatedModalData,
       showAllNutrientModalVisible,
-      showDeleteModalVisible,
-      showCancelModalVisible,
+      deleteModalVisible,
+      cancelModalVisible,
       editedMyData,
       editedMyNutrients,
       deletedMyNutirients,
