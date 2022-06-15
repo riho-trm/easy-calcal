@@ -181,6 +181,7 @@
 </template>
 
 <script lang="ts">
+// 6/14 残りの処理→食品追加時の処理、モーダル関連処理、APIへの保存処理
 import ConfirmationModal from "@/components/ConfirmationModal.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
@@ -218,6 +219,7 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const route = useRoute();
+    const typeahead = ref<InstanceType<typeof SimpleTypeahead>>();
 
     // 画面表示関連変数
     // 保存済みデータ（title,memoなど）
@@ -309,21 +311,32 @@ export default defineComponent({
     // 削除済み食品一覧を保存
     let deletedMyNutirients = reactive({}) as DeletedMyNutrients;
 
+    /**
+     * 栄養素合計変数を0で初期化する.
+     */
     const resetTotalNutrient = () => {
       for (const key in totalNutrient) {
         totalNutrient[key] = 0;
       }
     };
 
+    /**
+     * 初期表示のために各変数に値を入れる.
+     */
     const created = async () => {
+      // 各更新済みフラグをおろす
       editedMyData.isEdited = false;
       editedMyNutrients.isEdited = false;
       deletedMyNutirients.isDeleted = false;
 
+      // 目安量一覧をAPIから取得してstoreに格納
+      store.dispatch("getEstimatedQuantity");
+      // 検索用サジェストリストをストアから取得
       sugestItems = store.getters.getSugestList;
-      console.log(sugestItems);
 
+      // リクエストパラメータから対象データのidを取得
       const targetId = Number(route.params.id);
+      // 対象のmyデータをストアから取得
       const myDataRes: MyData = await store.getters.getMyData(targetId);
       // defaultMyData初期設定
       defaultMyData.savedDataId = myDataRes.savedDataId;
@@ -361,29 +374,64 @@ export default defineComponent({
           }
         }
       }
-      console.log(editedMyNutrients);
-      console.log(sugestItems);
     };
     created();
 
+    /**
+     * サジェストリストが選択された際の処理.
+     *
+     * @param foodName - サジェストリストから選択された食品名
+     */
+    const selectItem = async (foodName: string) => {
+      console.log("selectItemがよばれた");
+      const nutrientRes: Nutrients = await store.getters.calcNutrientsQuanrity(
+        foodName,
+        0
+      );
+      const estimatedIdRes = await store.getters.getEstimatedIdList(
+        nutrientRes.id
+      );
+      defaultMyNutrients.push({
+        savedNutrientsId: -100,
+        quantity: 0,
+        estimatedIdList: estimatedIdRes,
+        nutrient: nutrientRes,
+      });
+      console.log(typeahead.value);
+
+      // モジュールのdata内のinputにアクセスしてリセット
+      typeahead.value.input = "";
+    };
+    /**
+     * タイトル、メモ、urlが更新された際に更新済み変数に格納.
+     */
     const onUpdateMyData = () => {
       editedMyData.isEdited = true;
       editedMyData.title = defaultMyData.title;
       editedMyData.memo = defaultMyData.memo;
       editedMyData.url = defaultMyData.url;
     };
-
+    /**
+     * 食品の数量が変更された際に栄養素の計算を行う.
+     *
+     * @param quantity - 新たに入力された食品の量
+     * @param index - 対象のdefaultMyNutrientsのindex番号
+     * @param foodName - 対象の食品名
+     */
     const calcNutrient = (
       quantity: number,
       index: number,
       foodName: string
     ) => {
       console.log("calcNutrientがよばれた");
+      // 対象の食品名、量をストアに送って計算結果を返してもらう
       const res: Nutrients = store.getters.calcNutrientsQuanrity(
         foodName,
         quantity
       );
+      // 表示用栄養素変数に計算結果を格納
       defaultMyNutrients[index].nutrient = res;
+      // totalMutrientをリセットしてdefaultMyNutrientに格納されている栄養素を合計する
       resetTotalNutrient();
       for (const totalKey in totalNutrient) {
         for (const nutrient of defaultMyNutrients) {
@@ -400,35 +448,51 @@ export default defineComponent({
           }
         }
       }
+      // 更新用メソッドを呼び出し
       updateEditedNutrients(
         defaultMyNutrients[index].savedNutrientsId,
         quantity
       );
     };
+    /**
+     * 食品情報が更新された際にAPIに送る用に更新部分を変数に格納する.
+     *
+     * @param sevedNutrientsId - DBに格納されているmyデータの栄養素id
+     * @param newQuantity - 更新された量
+     */
     const updateEditedNutrients = (
       savedNutrientsId: number,
       newQuantity: number
     ) => {
       console.log("updateEditedNutrientsがよばれた");
-
-      editedMyNutrients.isEdited = true;
-
+      console.log(savedNutrientsId);
+      // editedMyNutrientsに同一idの食品情報が保存されている場合にtrue
       let hasId = false;
-      if (editedMyNutrients.editedData === undefined) {
+
+      if (savedNutrientsId === -100) {
+        // savedNutrientsIdが-100（新規登録食品）の場合は何もしない
+        console.log("1");
+        return;
+      } else if (editedMyNutrients.editedData === undefined) {
+        // 初めてeditedMyNutrientsに格納処理を行う場合に配列を作成する
+        console.log("2");
+        editedMyNutrients.isEdited = true;
         editedMyNutrients.editedData = [];
         editedMyNutrients.editedData.push({
           savedNutrientsId: savedNutrientsId,
           quantity: newQuantity,
         });
-      } else if (savedNutrientsId === -100) {
-        return;
       } else {
+        console.log("3");
+        editedMyNutrients.isEdited = true;
+        // 同一情報がすでに変数内にある場合は更新する
         for (const data of editedMyNutrients.editedData) {
           if (data.savedNutrientsId === savedNutrientsId) {
             data.quantity = newQuantity;
             hasId = true;
           }
         }
+        // ない場合は新しく配列に情報を入れる
         if (!hasId) {
           editedMyNutrients.editedData.push({
             savedNutrientsId: savedNutrientsId,
@@ -438,7 +502,11 @@ export default defineComponent({
       }
       console.log(editedMyNutrients);
     };
-
+    /**
+     *  食品情報を削除する.
+     *
+     * @param index - 削除対象のdefaultMyNutrientsのindex番号
+     */
     const deleteItem = (index: number) => {
       for (const totalKey in totalNutrient) {
         for (const stateKey in defaultMyNutrients[index].nutrient) {
@@ -456,15 +524,23 @@ export default defineComponent({
       updateDeletedMyNutrients(defaultMyNutrients[index].savedNutrientsId);
       defaultMyNutrients.splice(index, 1);
     };
+    /**
+     * 削除済み食品idをAPIに送るために変数に格納する.
+     *
+     * @param savedNutrientsId - DBに格納されているmyデータの栄養素id
+     */
     const updateDeletedMyNutrients = (savedNutrientsId: number) => {
       // 削除済みリスト追加処理
       if (savedNutrientsId === -100) {
+        console.log("1");
         return;
       } else if (deletedMyNutirients.savedNutrientsId === undefined) {
+        console.log("2");
         deletedMyNutirients.isDeleted = true;
         deletedMyNutirients.savedNutrientsId = [];
         deletedMyNutirients.savedNutrientsId.push(savedNutrientsId);
       } else {
+        console.log("3");
         deletedMyNutirients.isDeleted = true;
         deletedMyNutirients.savedNutrientsId.push(savedNutrientsId);
       }
@@ -475,13 +551,21 @@ export default defineComponent({
           savedNutrientsId
         ) {
           editedMyNutrients.editedData.splice(Number(index), 1);
+          console.log(editedMyNutrients);
         }
         if (editedMyNutrients.editedData.length === 0) {
           editedMyNutrients.isEdited = false;
+          console.log(editedMyNutrients);
         }
       }
     };
-
+    /**
+     * 目安量入力モーダルを開く.
+     *
+     * @param foodName - 対象の食品名
+     * @param estimatedIdList - 目安量id一覧
+     * @param index - 対象のdefaultMyNutrientsのindex番号
+     */
     const openInputEstimatedModal = (
       foodName: string,
       estimatedIdList: [],
@@ -492,6 +576,13 @@ export default defineComponent({
       inputEstimatedModalData.estimatedIdList = estimatedIdList;
       inputEstimatedModalData.stateIndex = index;
     };
+    /**
+     * 目安量入力モーダルで計算した値をセットし、栄養素を計算する.
+     *
+     * @param calculatedQuantity - 計算済みの量
+     * @param index - 対象のdefaultMyNutrientsのindex番号
+     * @param foodName - 対象の食品名
+     */
     const setQuantity = (
       calculatedQuantity: number,
       index: number,
@@ -502,18 +593,27 @@ export default defineComponent({
       calcNutrient(calculatedQuantity, index, foodName);
       closeInputEstimatedModal();
     };
+    /**
+     * 目安量登録モーダルを閉じる.
+     */
     const closeInputEstimatedModal = () => {
       inputEstimatedModalData.inputEstimatedModalVisible = false;
     };
-
+    /**
+     * 栄養素一覧表示モーダルを開く.
+     */
     const openShowAllNutrientModal = () => {
       showAllNutrientModalVisible.value = true;
     };
+    /**
+     * 栄養素一覧表示モーダルを閉じる.
+     */
     const closeShowAllNutrientModal = () => {
       showAllNutrientModalVisible.value = false;
     };
 
     return {
+      typeahead,
       defaultMyData,
       defaultMyNutrients,
       sugestItems,
@@ -527,6 +627,7 @@ export default defineComponent({
       editedMyNutrients,
       deletedMyNutirients,
 
+      selectItem,
       resetTotalNutrient,
       onUpdateMyData,
       calcNutrient,
