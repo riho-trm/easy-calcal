@@ -88,4 +88,40 @@ router.delete("/deletesavednutrients", authenticate, (req, res) => {
   });
 });
 
+router.delete("/deletemydata", authenticate, (req, res) => {
+  const sevedDataSql = "delete from saved_data WHERE id=?";
+  const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";
+  console.log(req.body.savedDataId);
+  connection.query(
+    savedNutrientsSql,
+    [req.body.savedDataId],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      connection.query(
+        sevedDataSql,
+        [req.body.savedDataId],
+        function (err, result) {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+      res.json({ status: "success" });
+    }
+  );
+
+  connection.query(
+    sevedDataSql,
+    [req.body.savedDataId],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      res.json({ status: "success" });
+    }
+  );
+});
+
 export default router;

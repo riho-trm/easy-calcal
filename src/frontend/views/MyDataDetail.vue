@@ -168,7 +168,7 @@
         :isVisible="deleteModalVisible"
         message="削除してよろしいですか？"
         @cancel="closeDeleteModal"
-        @processing="backPage"
+        @processing="deleteMyData"
       />
       <ConfirmationModal
         :isVisible="cancelModalVisible"
@@ -632,7 +632,19 @@ export default defineComponent({
     /**
      * myデータを削除する.
      */
-    // const deleteMyData = () => {};
+    const deleteMyData = async () => {
+      try {
+        console.log(defaultMyData.savedDataId);
+        const res = await store.dispatch(
+          "deleteMyData",
+          defaultMyData.savedDataId
+        );
+        console.log(res);
+        router.push("/mydatalist");
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     // 戻る確認モーダル関連
     /**
@@ -694,7 +706,7 @@ export default defineComponent({
       closeShowAllNutrientModal,
       openDeleteModal,
       closeDeleteModal,
-      //   deleteMyData,
+      deleteMyData,
       onclickCancelButton,
       closeCancelModal,
       backPage,
