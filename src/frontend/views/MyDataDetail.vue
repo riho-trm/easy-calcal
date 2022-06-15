@@ -133,7 +133,7 @@
         <AppCancelButton
           class="return-btn"
           buttonText="戻る"
-          @cancel="showModal"
+          @cancel="onclickCancelButton"
         />
         <AppProcessingButton
           v-if="!isEdit"
@@ -165,15 +165,15 @@
         @close="closeShowAllNutrientModal"
       />
       <ConfirmationModal
-        :isVisible="showDeleteModalVisible"
+        :isVisible="deleteModalVisible"
         message="削除してよろしいですか？"
-        @cancel="closeModal"
+        @cancel="closeDeleteModal"
         @processing="backPage"
       />
       <ConfirmationModal
-        :isVisible="showCancelModalVisible"
+        :isVisible="cancelModalVisible"
         message="編集内容が破棄されますがよろしいですか？"
-        @cancel="closeModal"
+        @cancel="closeCancelModal"
         @processing="backPage"
       />
     </div>
@@ -642,7 +642,7 @@ export default defineComponent({
      */
     const onclickCancelButton = () => {
       if (isEdit.value) {
-        deleteModalVisible.value = true;
+        cancelModalVisible.value = true;
       } else {
         router.push("/mydatalist");
       }
@@ -651,7 +651,7 @@ export default defineComponent({
      * 戻る確認モーダルを閉じる.
      */
     const closeCancelModal = () => {
-      deleteModalVisible.value = false;
+      cancelModalVisible.value = false;
     };
     /**
      * myデータリストに遷移する.
@@ -692,6 +692,13 @@ export default defineComponent({
       closeInputEstimatedModal,
       openShowAllNutrientModal,
       closeShowAllNutrientModal,
+      openDeleteModal,
+      closeDeleteModal,
+      //   deleteMyData,
+      onclickCancelButton,
+      closeCancelModal,
+      backPage,
+      //   save,
     };
   },
 });
