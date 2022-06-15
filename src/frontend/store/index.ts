@@ -423,13 +423,23 @@ export default createStore({
         return res;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        console.log(error);
-
-        console.log(errorMessage);
         throw errorMessage;
       }
     },
-
+    // myデータのsaved_dataを更新
+    async updateSavedData(context, sendData) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/save/updatesaveddata",
+          sendData,
+          context.state.authHeader
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
+      }
+    },
     // ログアウト
     logout(context) {
       localStorage.removeItem("token");

@@ -145,7 +145,7 @@
           v-if="isEdit"
           class="save-btn"
           buttonText="保存"
-          @processing="openSaveCalculatedModal"
+          @processing="save"
         />
       </div>
     </div>
@@ -199,6 +199,7 @@ import {
   Nutrients,
   TotalNutrient,
 } from "@/types/task";
+import axios from "axios";
 import { defineComponent, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SimpleTypeahead from "vue3-simple-typeahead";
@@ -675,7 +676,30 @@ export default defineComponent({
     /**
      * 変更データを保存する.
      */
-    // const save = () => {};
+    const save = async () => {
+      try {
+        if (editedMyData.isEdited === true) {
+          await store.dispatch("updateSavedData", {
+            title: editedMyData.title,
+            memo: editedMyData.memo,
+            url: editedMyData.url,
+            savedDataId: defaultMyData.savedDataId,
+          });
+        }
+        if (editedMyNutrients.isEdited === true) {
+          await store.dispatch("ストアの名前", {
+            editedData: editedMyNutrients.editedData,
+          });
+        }
+        if (deletedMyNutirients.isDeleted === true) {
+          await store.dispatch("ストアの名前", {
+            savedNutrientsId: deletedMyNutirients.savedNutrientsId,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
     return {
       typeahead,
@@ -710,7 +734,7 @@ export default defineComponent({
       onclickCancelButton,
       closeCancelModal,
       backPage,
-      //   save,
+      save,
     };
   },
 });

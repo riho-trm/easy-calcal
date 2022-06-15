@@ -70,7 +70,7 @@ router.put("/updatesaveddata", authenticate, (req, res) => {
 
 router.put("/updatesavednutrients", authenticate, (req, res) => {
   const sql = "update saved_nutrients set quantity=? WHERE id=?";
-  connection.query(sql, [req.body.esitedData], function (err, result) {
+  connection.query(sql, [req.body.editedData], function (err, result) {
     if (err) {
       throw err;
     }
