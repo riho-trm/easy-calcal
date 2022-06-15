@@ -54,4 +54,38 @@ router.get("/getmynutrients", authenticate, (req, res) => {
   });
 });
 
+router.put("/updatesaveddata", authenticate, (req, res) => {
+  const sql = "update saved_data set title=?, memo=?, url=? WHERE id=?";
+  connection.query(
+    sql,
+    [req.body.title, req.body.memo, req.body.url, req.body.savedDataId],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      res.json({ status: "success" });
+    }
+  );
+});
+
+router.put("/updatesavednutrients", authenticate, (req, res) => {
+  const sql = "update saved_nutrients set quantity=? WHERE id=?";
+  connection.query(sql, [req.body.esitedData], function (err, result) {
+    if (err) {
+      throw err;
+    }
+    res.json({ status: "success" });
+  });
+});
+
+router.delete("/deletesavednutrients", authenticate, (req, res) => {
+  const sql = "delete from saved_nutrients WHERE id in (?)";
+  connection.query(sql, [req.body.savedNutrientsId], function (err, result) {
+    if (err) {
+      throw err;
+    }
+    res.json({ status: "success" });
+  });
+});
+
 export default router;
