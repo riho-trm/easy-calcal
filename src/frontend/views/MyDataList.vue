@@ -97,7 +97,7 @@ export default defineComponent({
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
+    min-height: 100vh;
     .search-wrapper {
       padding: 2rem 0;
       :deep(.input-form) {

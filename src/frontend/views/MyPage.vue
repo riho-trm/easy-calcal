@@ -1,5 +1,5 @@
 <template>
-  <div class="mypage-wrapper">
+  <div class="top-wrapper">
     <div class="mypage-form">
       <h2>マイページ</h2>
       <div class="form-wrapper">
@@ -68,7 +68,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.mypage-wrapper {
+.top-wrapper {
   width: 60%;
   border: solid;
   border-color: #dfdfdf;

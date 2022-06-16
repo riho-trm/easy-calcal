@@ -34,8 +34,16 @@ export default defineComponent({
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   font-size: 62.5%; /*rem算出をしやすくするために*/
-  min-height: 100vh;
+
   position: relative;
+  width: 100%;
+  height: auto !important;
+  height: 100%;
+  min-height: 100vh;
+  padding-bottom: 70px;
+  .top-wrapper {
+    height: auto;
+  }
 }
 
 *,

@@ -795,7 +795,7 @@ export default defineComponent({
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
+    padding-bottom: 2rem;
     .title {
       padding-top: 2rem;
       span {

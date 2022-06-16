@@ -380,12 +380,10 @@ export default defineComponent({
 
 .top-wrapper {
   background-color: #f0f9ff;
-  min-height: 100vh;
   .container {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
     display: flex;
     .input-nutrients {
       width: 50%;

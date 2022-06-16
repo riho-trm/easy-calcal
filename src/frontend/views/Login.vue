@@ -183,9 +183,10 @@ export default defineComponent({
       padding: 30px 0;
     }
     img {
-      width: 400px;
+      width: 15rem;
     }
     .muffin-img {
+      width: 13rem;
       position: absolute;
       top: 280px;
       right: 25px;
