@@ -71,15 +71,15 @@ router.put("/updatesaveddata", authenticate, (req, res) => {
 
 // ok
 router.put("/updatesavednutrients", authenticate, (req, res) => {
-  console.log(req.body.editedData);
-  for (const editedData of req.body.editedData) {
-    const sql = `update saved_nutrients set quantity=${editedData.quantity} WHERE id=${editedData.savedNutrientsId}`;
-    connection.query(sql, function (err, result) {
-      if (err) {
-        throw err;
-      }
-    });
-  }
+  console.log(req.body);
+  const sql =
+    "INSERT INTO saved_nutrients (id, saved_data_id, nutrient_id, quantity) VALUES ? ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)";
+  connection.query(sql, [req.body.editedData], function (err, result) {
+    if (err) {
+      throw err;
+    }
+    res.json({ status: "success" });
+  });
 });
 // ok
 router.delete("/deletesavednutrients", authenticate, (req, res) => {
