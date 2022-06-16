@@ -28,7 +28,11 @@
             :key="data.savedDataId"
           >
             <td class="data-id">{{ data.savedDataId }}</td>
-            <td class="title">{{ data.title }}</td>
+            <td class="title">
+              <div @click="routeMyDataDetail(data.savedDataId)">
+                {{ data.title }}
+              </div>
+            </td>
             <td class="updated">{{ data.updatedAt }}</td>
           </tr>
         </table>
@@ -42,12 +46,14 @@
 import BaseInput from "@/components/presentational/BaseInput.vue";
 import { MyData } from "@/types/task";
 import { computed, defineComponent, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
 export default defineComponent({
   components: { BaseInput },
   setup() {
     const store = useStore();
+    const router = useRouter();
 
     let states = reactive([]) as MyData[];
     const searchWord = ref("");
@@ -73,7 +79,11 @@ export default defineComponent({
       return titles;
     });
 
-    return { states, searchWord, filteredTitles };
+    const routeMyDataDetail = (id: any) => {
+      router.push({ path: `/mydatadetail/${id}` });
+    };
+
+    return { states, searchWord, filteredTitles, routeMyDataDetail };
   },
 });
 </script>
@@ -126,6 +136,7 @@ export default defineComponent({
           .data-id,
           .title {
             font-size: 1.5rem;
+            cursor: pointer;
           }
         }
       }

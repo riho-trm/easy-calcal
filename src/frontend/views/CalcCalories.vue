@@ -196,6 +196,7 @@ export default defineComponent({
     } as TotalNutrient);
 
     const created = () => {
+      store.dispatch("getEstimatedQuantity");
       sugestItems = store.getters.getSugestList;
     };
     created();

@@ -66,6 +66,10 @@ export default createStore({
       const data = state.nutrients.find((data) => data.food_name === foodName);
       return data;
     },
+    // 渡されたidに基づく栄養素を1件取得
+    getNutrientById: (state) => (id: number) => {
+      return state.nutrients.find((data) => data.id === id);
+    },
     // 食材量を基に栄養量を計算
     calcNutrientsQuanrity:
       (state) => (foodName: string, foodQuantity: number) => {
@@ -97,6 +101,10 @@ export default createStore({
     // myデータ一覧を取得
     getMyDataList(state) {
       return state.myDataList;
+    },
+    // 渡されたidに基づくmyデータを1件取得
+    getMyData: (state) => (id: number) => {
+      return state.myDataList.find((data) => data.savedDataId === id);
     },
   },
 
@@ -225,7 +233,7 @@ export default createStore({
         context.commit("setNutrients", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        return errorMessage;
+        throw errorMessage;
       }
     },
     // 目安量登録
@@ -251,7 +259,7 @@ export default createStore({
           );
         } catch (error: any) {
           const errorMessage = error.response.data || error.message;
-          return errorMessage;
+          throw errorMessage;
         }
       }
     },
@@ -267,7 +275,7 @@ export default createStore({
         context.commit("setEstimatedAmountList", res.data);
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        return errorMessage;
+        throw errorMessage;
       }
     },
     // 登録済目安量削除
@@ -290,7 +298,7 @@ export default createStore({
         return targetIndex;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        return errorMessage;
+        throw errorMessage;
       }
     },
     // 登録済目安量編集
@@ -304,7 +312,7 @@ export default createStore({
         return res;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        return errorMessage;
+        throw errorMessage;
       }
     },
     //myデータ保存
@@ -324,7 +332,7 @@ export default createStore({
         return res.data.insertId;
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
-        return errorMessage;
+        throw errorMessage;
       }
     },
     // myデータに紐付いた栄養情報を保存
@@ -339,7 +347,7 @@ export default createStore({
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log(error);
-        return errorMessage;
+        throw errorMessage;
       }
     },
     // 保存されたmyデータを取得
@@ -395,7 +403,74 @@ export default createStore({
       } catch (error: any) {
         const errorMessage = error.response.data || error.message;
         console.log(errorMessage);
-        return errorMessage;
+        throw errorMessage;
+      }
+    },
+
+    // myデータを1件削除
+    async deleteMyData(context, savedDataId) {
+      try {
+        const res = await axios.delete(
+          "http://localhost:3000/save/deletemydata",
+          // deleteメソッドでは引数を3つ取れないのでこの形で渡す
+          {
+            data: { savedDataId },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
+      }
+    },
+    // myデータのsaved_dataを更新
+    async updateSavedData(context, sendData) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/save/updatesaveddata",
+          sendData,
+          context.state.authHeader
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
+      }
+    },
+    // myデータのsaved_nutrientsを更新
+    async updateSavedNutrients(context, sendData) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/save/updatesavednutrients",
+          sendData,
+          context.state.authHeader
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
+      }
+    },
+    // myデータのsaved_nutrientsを削除
+    async deleteSavedNutrients(context, savedNutrientsId) {
+      try {
+        const res = await axios.delete(
+          "http://localhost:3000/save/deletesavednutrients",
+          // deleteメソッドでは引数を3つ取れないのでこの形で渡す
+          {
+            data: { savedNutrientsId },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
       }
     },
 

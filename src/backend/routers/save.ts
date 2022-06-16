@@ -54,4 +54,80 @@ router.get("/getmynutrients", authenticate, (req, res) => {
   });
 });
 
+// ok
+router.put("/updatesaveddata", authenticate, (req, res) => {
+  const sql = "update saved_data set title=?, memo=?, url=? WHERE id=?";
+  connection.query(
+    sql,
+    [req.body.title, req.body.memo, req.body.url, req.body.savedDataId],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      res.json({ status: "success" });
+    }
+  );
+});
+
+// ok
+router.put("/updatesavednutrients", authenticate, (req, res) => {
+  console.log(req.body);
+  const sql =
+    "INSERT INTO saved_nutrients (id, saved_data_id, nutrient_id, quantity) VALUES ? ON DUPLICATE KEY UPDATE quantity=VALUES(quantity)";
+  connection.query(sql, [req.body.editedData], function (err, result) {
+    if (err) {
+      throw err;
+    }
+    res.json({ status: "success" });
+  });
+});
+// ok
+router.delete("/deletesavednutrients", authenticate, (req, res) => {
+  console.log(req.body);
+  const sql = "delete from saved_nutrients WHERE id in (?)";
+  connection.query(sql, [req.body.savedNutrientsId], function (err, result) {
+    if (err) {
+      throw err;
+    }
+    res.json({ status: "success" });
+  });
+});
+
+// ok
+router.delete("/deletemydata", authenticate, (req, res) => {
+  const sevedDataSql = "delete from saved_data WHERE id=?";
+  const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";
+  console.log(req.body.savedDataId);
+  connection.query(
+    savedNutrientsSql,
+    [req.body.savedDataId],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      connection.query(
+        sevedDataSql,
+        [req.body.savedDataId],
+        function (err, result) {
+          if (err) {
+            throw err;
+          }
+        }
+      );
+      res.json({ status: "success" });
+    }
+  );
+
+  connection.query(
+    sevedDataSql,
+    [req.body.savedDataId],
+    function (err, result) {
+      if (err) {
+        throw err;
+      }
+      res.json({ status: "success" });
+    }
+  );
+});
+
 export default router;
