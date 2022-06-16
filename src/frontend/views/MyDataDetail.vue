@@ -33,7 +33,7 @@
               :key="index"
             >
               <div class="icon-btn" @click="deleteItem(index)">
-                <fa icon="trash-can" />
+                <fa v-if="isEdit" icon="trash-can" />
               </div>
               <div class="food-name">{{ data.nutrient.food_name }}</div>
               <div class="food-input">
@@ -181,7 +181,7 @@
 </template>
 
 <script lang="ts">
-// 6/14 残りの処理→食品追加時の処理、モーダル関連処理、APIへの保存処理
+// 6/14 残りの処理→APIへの保存処理
 import ConfirmationModal from "@/components/ConfirmationModal.vue";
 import AppCancelButton from "@/components/container/AppCancelButton.vue";
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
@@ -679,6 +679,7 @@ export default defineComponent({
     const save = async () => {
       try {
         if (editedMyData.isEdited === true) {
+          console.log("saved_dataを更新");
           await store.dispatch("updateSavedData", {
             title: editedMyData.title,
             memo: editedMyData.memo,
@@ -687,14 +688,18 @@ export default defineComponent({
           });
         }
         if (editedMyNutrients.isEdited === true) {
-          await store.dispatch("ストアの名前", {
+          console.log("saved_nutrientsを更新");
+          await store.dispatch("updateSavedNutrients", {
             editedData: editedMyNutrients.editedData,
           });
         }
         if (deletedMyNutirients.isDeleted === true) {
-          await store.dispatch("ストアの名前", {
-            savedNutrientsId: deletedMyNutirients.savedNutrientsId,
-          });
+          console.log("saved_nutrientsを削除");
+          const savedNutrientsId: number[] = [];
+          deletedMyNutirients.savedNutrientsId.forEach((data) =>
+            savedNutrientsId.push(data)
+          );
+          await store.dispatch("deleteSavedNutrients", savedNutrientsId);
         }
       } catch (error) {
         console.log(error);
@@ -823,6 +828,7 @@ export default defineComponent({
             align-items: center;
             margin-bottom: 1rem;
             .icon-btn {
+              cursor: pointer;
               width: 10%;
               font-size: 2rem;
             }
