@@ -440,6 +440,40 @@ export default createStore({
         throw errorMessage;
       }
     },
+    // myデータのsaved_nutrientsを更新
+    async updateSavedNutrients(context, sendData) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/save/updatesavednutrients",
+          sendData,
+          context.state.authHeader
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
+      }
+    },
+    // myデータのsaved_nutrientsを削除
+    async deleteSavedNutrients(context, savedNutrientsId) {
+      try {
+        const res = await axios.delete(
+          "http://localhost:3000/save/deletesavednutrients",
+          // deleteメソッドでは引数を3つ取れないのでこの形で渡す
+          {
+            data: { savedNutrientsId },
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        return res;
+      } catch (error: any) {
+        const errorMessage = error.response.data || error.message;
+        throw errorMessage;
+      }
+    },
+
     // ログアウト
     logout(context) {
       localStorage.removeItem("token");
