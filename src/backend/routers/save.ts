@@ -54,6 +54,7 @@ router.get("/getmynutrients", authenticate, (req, res) => {
   });
 });
 
+// ok
 router.put("/updatesaveddata", authenticate, (req, res) => {
   const sql = "update saved_data set title=?, memo=?, url=? WHERE id=?";
   connection.query(
@@ -68,17 +69,21 @@ router.put("/updatesaveddata", authenticate, (req, res) => {
   );
 });
 
+// ok
 router.put("/updatesavednutrients", authenticate, (req, res) => {
-  const sql = "update saved_nutrients set quantity=? WHERE id=?";
-  connection.query(sql, [req.body.editedData], function (err, result) {
-    if (err) {
-      throw err;
-    }
-    res.json({ status: "success" });
-  });
+  console.log(req.body.editedData);
+  for (const editedData of req.body.editedData) {
+    const sql = `update saved_nutrients set quantity=${editedData.quantity} WHERE id=${editedData.savedNutrientsId}`;
+    connection.query(sql, function (err, result) {
+      if (err) {
+        throw err;
+      }
+    });
+  }
 });
-
+// ok
 router.delete("/deletesavednutrients", authenticate, (req, res) => {
+  console.log(req.body);
   const sql = "delete from saved_nutrients WHERE id in (?)";
   connection.query(sql, [req.body.savedNutrientsId], function (err, result) {
     if (err) {
@@ -88,6 +93,7 @@ router.delete("/deletesavednutrients", authenticate, (req, res) => {
   });
 });
 
+// ok
 router.delete("/deletemydata", authenticate, (req, res) => {
   const sevedDataSql = "delete from saved_data WHERE id=?";
   const savedNutrientsSql = "delete from saved_nutrients WHERE saved_data_id=?";
