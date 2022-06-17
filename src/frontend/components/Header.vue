@@ -2,7 +2,12 @@
   <header>
     <div class="container">
       <div class="title">
-        <router-link to="/">title（仮）</router-link>
+        <img
+          class="title-img"
+          src="../assets/title_logo.png"
+          alt="タイトルロゴ"
+        />
+        <router-link to="/">EASY CALCAL</router-link>
       </div>
       <div class="link">
         <router-link to="/calccalories">カロリー計算</router-link>
@@ -57,6 +62,10 @@ header {
     .title {
       width: 40%;
       text-align: left;
+      display: flex;
+      img {
+        height: 80px;
+      }
       a {
         height: 100%;
         display: flex;
