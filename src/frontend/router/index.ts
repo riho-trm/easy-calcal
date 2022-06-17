@@ -32,8 +32,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "Login",
     component: Login,
     beforeEnter: (to, from, next) => {
-      console.log("ログインのbeforeEnterがよばれた");
-      console.log(store.state.auth.token);
       if (
         store.state.auth.token === null ||
         store.state.auth.token === undefined
@@ -49,8 +47,6 @@ const routes: Array<RouteRecordRaw> = [
     name: "Register",
     component: MembershipRegistration,
     beforeEnter: (to, from, next) => {
-      console.log("レジスターのbeforeEnterがよばれた");
-      console.log(store.state.auth.token);
       if (
         store.state.auth.token === null ||
         store.state.auth.token === undefined
@@ -68,6 +64,13 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/registerestimatedamount",
@@ -75,6 +78,13 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterEstimatedAmount,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
     },
   },
   {
@@ -84,6 +94,13 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/editestimatedamount/:id",
@@ -91,6 +108,13 @@ const routes: Array<RouteRecordRaw> = [
     component: EditEstimatedAmount,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
     },
   },
   {
