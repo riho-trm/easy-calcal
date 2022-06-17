@@ -12,6 +12,7 @@ import MyDataList from "../views/MyDataList.vue";
 import MyDataDetail from "../views/MyDataDetail.vue";
 import NotFound from "../views/NotFound.vue";
 import { authorizeToken } from "./guards";
+import store from "../store";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -30,16 +31,43 @@ const routes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "Login",
     component: Login,
+    beforeEnter: (to, from, next) => {
+      console.log("ログインのbeforeEnterがよばれた");
+      console.log(store.state.auth.token);
+      if (
+        store.state.auth.token === null ||
+        store.state.auth.token === undefined
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
   },
   {
     path: "/register",
     name: "Register",
     component: MembershipRegistration,
+    beforeEnter: (to, from, next) => {
+      console.log("レジスターのbeforeEnterがよばれた");
+      console.log(store.state.auth.token);
+      if (
+        store.state.auth.token === null ||
+        store.state.auth.token === undefined
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
   },
   {
     path: "/adminmenu",
     name: "AdminMenu",
     component: AdminMenu,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/registerestimatedamount",
