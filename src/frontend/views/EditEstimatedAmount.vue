@@ -148,9 +148,9 @@ export default defineComponent({
     });
     let modalVisible = ref(false);
 
-    const created = () => {
+    const created = async () => {
       const targetId = Number(route.params.id);
-      const res = store.getters.getEstimatedAmount(targetId);
+      const res = await store.getters.getEstimatedAmount(targetId);
       console.log(res);
       if (res === undefined) {
         router.push("/notfound");
@@ -196,10 +196,26 @@ export default defineComponent({
     const update = async (sendData: any) => {
       try {
         const res = await store.dispatch("updateEstimatedQuantity", sendData);
-        console.dir(JSON.stringify(res));
         router.push("/estimatedamountlist");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
 

@@ -42,7 +42,7 @@ export default defineComponent({
       userName: "",
     };
 
-    const created = () => {
+    const created = async () => {
       const res = store.getters.getUserInformation;
       userInformation.email = res.email;
       userInformation.userName = res.userName;

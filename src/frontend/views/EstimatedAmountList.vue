@@ -100,8 +100,25 @@ export default defineComponent({
             updatedAt: new Date(Date.parse(data.updatedAt)).toLocaleString(),
           });
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
     created();
@@ -121,8 +138,25 @@ export default defineComponent({
         const res = await store.dispatch("deleteEstimatedQuantity", id);
         states.splice(res, 1);
         closeModal();
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
     const routeEditData = (id: any) => {

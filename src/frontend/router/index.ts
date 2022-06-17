@@ -31,6 +31,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "Login",
     component: Login,
+    props: true,
     beforeEnter: (to, from, next) => {
       if (
         store.state.auth.token === null ||

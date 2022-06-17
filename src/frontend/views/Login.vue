@@ -23,6 +23,11 @@
     <div class="login-wrapper">
       <div class="login">
         <h2>ログイン</h2>
+        <div class="out-of-authentication error-msg">
+          {{ message1 }}
+          <br />
+          {{ message2 }}
+        </div>
         <div class="email">
           <BaseInput
             id="email-input"
@@ -104,6 +109,7 @@ interface InputType {
 }
 
 export default defineComponent({
+  props: ["message1", "message2"],
   components: {
     BaseInput,
     AppProcessingButton,
@@ -231,6 +237,10 @@ export default defineComponent({
         width: 50%;
         height: 35px;
         border: 1px solid #dcdcdc;
+      }
+      .out-of-authentication {
+        padding-bottom: 1rem;
+        font-size: 1rem;
       }
       .email,
       .password {

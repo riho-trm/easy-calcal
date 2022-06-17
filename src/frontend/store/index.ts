@@ -232,8 +232,7 @@ export default createStore({
         console.log(res.data);
         context.commit("setNutrients", res.data);
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // 目安量登録
@@ -258,8 +257,7 @@ export default createStore({
             context.state.authHeader
           );
         } catch (error: any) {
-          const errorMessage = error.response.data || error.message;
-          throw errorMessage;
+          throw error.response;
         }
       }
     },
@@ -274,8 +272,7 @@ export default createStore({
         console.log(res.data);
         context.commit("setEstimatedAmountList", res.data);
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // 登録済目安量削除
@@ -297,8 +294,7 @@ export default createStore({
         context.commit("deleteEstimatedAmountList", targetIndex);
         return targetIndex;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // 登録済目安量編集
@@ -311,8 +307,7 @@ export default createStore({
         );
         return res;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     //myデータ保存
@@ -331,8 +326,7 @@ export default createStore({
         );
         return res.data.insertId;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // myデータに紐付いた栄養情報を保存
@@ -345,9 +339,7 @@ export default createStore({
         );
         // return res;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        console.log(error);
-        throw errorMessage;
+        throw error.response;
       }
     },
     // 保存されたmyデータを取得
@@ -401,9 +393,8 @@ export default createStore({
         }
         context.commit("setMyData", payload);
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        console.log(errorMessage);
-        throw errorMessage;
+        // const errorMessage = error.response.data || error.message;
+        throw error.response;
       }
     },
 
@@ -422,8 +413,7 @@ export default createStore({
         );
         return res;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // myデータのsaved_dataを更新
@@ -436,8 +426,7 @@ export default createStore({
         );
         return res;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // myデータのsaved_nutrientsを更新
@@ -450,8 +439,7 @@ export default createStore({
         );
         return res;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
     // myデータのsaved_nutrientsを削除
@@ -469,8 +457,7 @@ export default createStore({
         );
         return res;
       } catch (error: any) {
-        const errorMessage = error.response.data || error.message;
-        throw errorMessage;
+        throw error.response;
       }
     },
 
