@@ -10,9 +10,14 @@ import CalcCalories from "../views/CalcCalories.vue";
 import MyPage from "../views/MyPage.vue";
 import MyDataList from "../views/MyDataList.vue";
 import MyDataDetail from "../views/MyDataDetail.vue";
+import NotFound from "../views/NotFound.vue";
 import { authorizeToken } from "./guards";
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/:catchAll(.*)",
+    component: NotFound,
+  },
   {
     path: "/",
     name: "TopMenu",
