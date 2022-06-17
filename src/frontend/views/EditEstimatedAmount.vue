@@ -151,13 +151,18 @@ export default defineComponent({
     const created = () => {
       const targetId = Number(route.params.id);
       const res = store.getters.getEstimatedAmount(targetId);
-      state.id = res.id;
-      state.nutrientsListFoodName = res.foodName;
-      state.toDisplayFoodName = res.foodNameTodisplay;
-      state.unit = res.unit;
-      state.standardQuantity = res.standardQuantity;
-      state.includeDisposal = Boolean(res.includeDisposal);
-      console.log(state);
+      console.log(res);
+      if (res === undefined) {
+        router.push("/notfound");
+      } else {
+        state.id = res.id;
+        state.nutrientsListFoodName = res.foodName;
+        state.toDisplayFoodName = res.foodNameTodisplay;
+        state.unit = res.unit;
+        state.standardQuantity = res.standardQuantity;
+        state.includeDisposal = Boolean(res.includeDisposal);
+        console.log(state);
+      }
     };
     created();
 
