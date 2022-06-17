@@ -70,7 +70,7 @@ header {
         height: 100%;
         display: flex;
         align-items: center;
-        font-size: 2rem;
+        font-size: 1.5rem;
         font-weight: bold;
       }
     }
@@ -82,7 +82,8 @@ header {
         height: 100%;
         display: flex;
         align-items: center;
-        font-size: 1.2rem;
+        font-size: 1rem;
+        font-weight: 500;
       }
     }
   }
