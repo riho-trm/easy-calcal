@@ -63,8 +63,25 @@ export default defineComponent({
         await store.dispatch("getmydata");
         const res = store.getters.getMyDataList;
         res.forEach((data: MyData) => states.push(data));
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
     created();
@@ -97,7 +114,7 @@ export default defineComponent({
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
+    min-height: 100vh;
     .search-wrapper {
       padding: 2rem 0;
       :deep(.input-form) {

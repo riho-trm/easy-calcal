@@ -32,13 +32,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 .top-wrapper {
   background-color: #f0f9ff;
-  min-height: 100vh;
   .container {
     width: 90%;
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
+    min-height: 100vh;
     .page-title {
       font-size: 2.5rem;
       font-weight: 500;

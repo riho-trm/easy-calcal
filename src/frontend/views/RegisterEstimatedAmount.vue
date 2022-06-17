@@ -157,7 +157,7 @@ export default defineComponent({
     let sugestItems = reactive([]);
     let modalVisible = ref(false);
 
-    const created = () => {
+    const created = async () => {
       sugestItems = store.getters.getSugestList;
       console.log(sugestItems);
     };
@@ -199,8 +199,25 @@ export default defineComponent({
         const res = await store.dispatch("saveEstimatedQuantity", data);
         console.dir(JSON.stringify(res));
         router.push("/adminmenu");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
 
@@ -249,13 +266,11 @@ export default defineComponent({
 
 .top-wrapper {
   background-color: #f0f9ff;
-  min-height: 100vh;
   .container {
     width: 90%;
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
     .error-msg {
       color: red;
       font-size: 0.8rem;

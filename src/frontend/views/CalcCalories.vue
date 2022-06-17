@@ -195,9 +195,31 @@ export default defineComponent({
       sodium_chloride_equivalent: 0,
     } as TotalNutrient);
 
-    const created = () => {
-      store.dispatch("getEstimatedQuantity");
-      sugestItems = store.getters.getSugestList;
+    const created = async () => {
+      try {
+        sugestItems = store.getters.getSugestList;
+        await store.dispatch("getEstimatedQuantity");
+      } catch (error: any) {
+        console.log(error.status);
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
+      }
     };
     created();
 
@@ -334,8 +356,25 @@ export default defineComponent({
         }
         await store.dispatch("saveMyNutrients", sendDataOfMyNutrients);
         router.push("/");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
 
@@ -380,12 +419,10 @@ export default defineComponent({
 
 .top-wrapper {
   background-color: #f0f9ff;
-  min-height: 100vh;
   .container {
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
     display: flex;
     .input-nutrients {
       width: 50%;

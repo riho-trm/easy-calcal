@@ -1,8 +1,15 @@
 <template>
   <div class="container">
     <div class="title-animation">
-      <h1 class="title-logo">title（仮）</h1>
-      <img
+      <div class="title-logo">
+        <img
+          class="title-img"
+          src="../assets/title_logo2.png"
+          alt="タイトルロゴ"
+        />
+        <div class="description">カロリー計算をもっと楽に！</div>
+      </div>
+      <!-- <img
         class="humberger-img"
         src="../assets/hamburger-g53f2dd67d_640.jpg"
         alt="ハンバーガーの写真"
@@ -11,11 +18,16 @@
         class="img muffin-img"
         src="../assets/muffins-g1f7348331_640.jpg"
         alt="マフィンの写真"
-      />
+      /> -->
     </div>
     <div class="login-wrapper">
       <div class="login">
         <h2>ログイン</h2>
+        <div class="out-of-authentication error-msg">
+          {{ message1 }}
+          <br />
+          {{ message2 }}
+        </div>
         <div class="email">
           <BaseInput
             id="email-input"
@@ -97,6 +109,7 @@ interface InputType {
 }
 
 export default defineComponent({
+  props: ["message1", "message2"],
   components: {
     BaseInput,
     AppProcessingButton,
@@ -174,22 +187,33 @@ export default defineComponent({
   margin: 0 auto;
   height: 80vh;
   margin-top: 20px;
+  min-height: 100vh;
+  max-height: 600px;
   .title-animation {
     width: 50%;
     margin-left: auto;
     position: relative;
     .title-logo {
-      font-size: 3rem;
       padding: 30px 0;
+      margin: auto;
+      .title-img {
+        width: 20rem;
+      }
+      .description {
+        font-size: 1.5rem;
+        color: #3d618d;
+        font-weight: 500;
+      }
     }
-    img {
-      width: 400px;
-    }
-    .muffin-img {
-      position: absolute;
-      top: 280px;
-      right: 25px;
-    }
+    // img {
+    //   width: 15rem;
+    // }
+    // .muffin-img {
+    //   width: 13rem;
+    //   position: absolute;
+    //   top: 280px;
+    //   right: 25px;
+    // }
   }
 
   .login-wrapper {
@@ -213,6 +237,10 @@ export default defineComponent({
         width: 50%;
         height: 35px;
         border: 1px solid #dcdcdc;
+      }
+      .out-of-authentication {
+        padding-bottom: 1rem;
+        font-size: 1rem;
       }
       .email,
       .password {

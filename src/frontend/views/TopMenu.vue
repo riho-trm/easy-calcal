@@ -38,7 +38,7 @@ export default defineComponent({
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
+    min-height: 100vh;
     .page-title {
       font-size: 2.5rem;
       font-weight: 500;

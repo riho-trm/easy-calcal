@@ -329,50 +329,70 @@ export default defineComponent({
       editedMyData.isEdited = false;
       editedMyNutrients.isEdited = false;
       deletedMyNutirients.isDeleted = false;
+      try {
+        // 検索用サジェストリストをストアから取得
+        sugestItems = store.getters.getSugestList;
+        // 目安量一覧をAPIから取得してstoreに格納
+        await store.dispatch("getEstimatedQuantity");
 
-      // 目安量一覧をAPIから取得してstoreに格納
-      store.dispatch("getEstimatedQuantity");
-      // 検索用サジェストリストをストアから取得
-      sugestItems = store.getters.getSugestList;
-
-      // リクエストパラメータから対象データのidを取得
-      const targetId = Number(route.params.id);
-      // 対象のmyデータをストアから取得
-      const myDataRes: MyData = await store.getters.getMyData(targetId);
-      // defaultMyData初期設定
-      defaultMyData.savedDataId = myDataRes.savedDataId;
-      defaultMyData.title = myDataRes.title;
-      defaultMyData.memo = myDataRes.memo;
-      defaultMyData.url = myDataRes.url;
-      // defaultMyNutrient初期設定
-      for (const data of myDataRes.myNutrients) {
-        const foodName = await store.getters.getNutrientById(data.nutrientId)
-          .food_name;
-        const nutrientRes: Nutrients =
-          await store.getters.calcNutrientsQuanrity(foodName, data.quantity);
-        const estimatedIdRes: Array<number> =
-          await store.getters.getEstimatedIdList(data.nutrientId);
-        defaultMyNutrients.push({
-          savedNutrientsId: data.savedNutrientsId,
-          quantity: data.quantity,
-          estimatedIdList: estimatedIdRes,
-          nutrient: nutrientRes,
-        });
-      }
-      // totalNutrient初期設定
-      for (const totalKey in totalNutrient) {
-        for (const nutrient of defaultMyNutrients) {
-          for (const nutrientKey in nutrient.nutrient) {
-            if (nutrientKey === totalKey) {
-              const plusNutrient =
-                Math.round(
-                  (totalNutrient[totalKey] += nutrient.nutrient[
-                    nutrientKey
-                  ] as number) * 100
-                ) / 100;
-              totalNutrient[totalKey] = plusNutrient;
+        // リクエストパラメータから対象データのidを取得
+        const targetId = Number(route.params.id);
+        // 対象のmyデータをストアから取得
+        const myDataRes: MyData = await store.getters.getMyData(targetId);
+        // defaultMyData初期設定
+        defaultMyData.savedDataId = myDataRes.savedDataId;
+        defaultMyData.title = myDataRes.title;
+        defaultMyData.memo = myDataRes.memo;
+        defaultMyData.url = myDataRes.url;
+        // defaultMyNutrient初期設定
+        for (const data of myDataRes.myNutrients) {
+          const foodName = await store.getters.getNutrientById(data.nutrientId)
+            .food_name;
+          const nutrientRes: Nutrients =
+            await store.getters.calcNutrientsQuanrity(foodName, data.quantity);
+          const estimatedIdRes: Array<number> =
+            await store.getters.getEstimatedIdList(data.nutrientId);
+          defaultMyNutrients.push({
+            savedNutrientsId: data.savedNutrientsId,
+            quantity: data.quantity,
+            estimatedIdList: estimatedIdRes,
+            nutrient: nutrientRes,
+          });
+        }
+        // totalNutrient初期設定
+        for (const totalKey in totalNutrient) {
+          for (const nutrient of defaultMyNutrients) {
+            for (const nutrientKey in nutrient.nutrient) {
+              if (nutrientKey === totalKey) {
+                const plusNutrient =
+                  Math.round(
+                    (totalNutrient[totalKey] += nutrient.nutrient[
+                      nutrientKey
+                    ] as number) * 100
+                  ) / 100;
+                totalNutrient[totalKey] = plusNutrient;
+              }
             }
           }
+        }
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
         }
       }
     };
@@ -653,8 +673,25 @@ export default defineComponent({
         );
         console.log(res);
         router.push("/mydatalist");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
 
@@ -736,8 +773,25 @@ export default defineComponent({
           await store.dispatch("saveMyNutrients", sendDataOfMyNutrients);
         }
         router.push("/mydatalist");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
 
@@ -795,7 +849,7 @@ export default defineComponent({
     width: 90%;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
+    padding-bottom: 2rem;
     .title {
       padding-top: 2rem;
       span {

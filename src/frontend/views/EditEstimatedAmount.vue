@@ -148,16 +148,21 @@ export default defineComponent({
     });
     let modalVisible = ref(false);
 
-    const created = () => {
+    const created = async () => {
       const targetId = Number(route.params.id);
-      const res = store.getters.getEstimatedAmount(targetId);
-      state.id = res.id;
-      state.nutrientsListFoodName = res.foodName;
-      state.toDisplayFoodName = res.foodNameTodisplay;
-      state.unit = res.unit;
-      state.standardQuantity = res.standardQuantity;
-      state.includeDisposal = Boolean(res.includeDisposal);
-      console.log(state);
+      const res = await store.getters.getEstimatedAmount(targetId);
+      console.log(res);
+      if (res === undefined) {
+        router.push("/notfound");
+      } else {
+        state.id = res.id;
+        state.nutrientsListFoodName = res.foodName;
+        state.toDisplayFoodName = res.foodNameTodisplay;
+        state.unit = res.unit;
+        state.standardQuantity = res.standardQuantity;
+        state.includeDisposal = Boolean(res.includeDisposal);
+        console.log(state);
+      }
     };
     created();
 
@@ -191,10 +196,26 @@ export default defineComponent({
     const update = async (sendData: any) => {
       try {
         const res = await store.dispatch("updateEstimatedQuantity", sendData);
-        console.dir(JSON.stringify(res));
         router.push("/estimatedamountlist");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        if (error.status === 401) {
+          await store
+            .dispatch("logout")
+            .then(() => {
+              router.push({
+                name: "Login",
+                params: {
+                  message1: "セッションが途切れました。",
+                  message2: "再度ログインしてください。",
+                },
+              });
+            })
+            .catch((error) => {
+              throw error;
+            });
+        } else {
+          console.log(error);
+        }
       }
     };
 
@@ -241,13 +262,11 @@ export default defineComponent({
 
 .top-wrapper {
   background-color: #f0f9ff;
-  min-height: 100vh;
   .container {
     width: 90%;
     background-color: white;
     margin-left: auto;
     margin-right: auto;
-    height: 100vh;
     .error-msg {
       color: red;
       font-size: 0.8rem;

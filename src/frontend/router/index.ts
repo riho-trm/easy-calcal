@@ -10,9 +10,15 @@ import CalcCalories from "../views/CalcCalories.vue";
 import MyPage from "../views/MyPage.vue";
 import MyDataList from "../views/MyDataList.vue";
 import MyDataDetail from "../views/MyDataDetail.vue";
+import NotFound from "../views/NotFound.vue";
 import { authorizeToken } from "./guards";
+import store from "../store";
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: "/:catchAll(.*)",
+    component: NotFound,
+  },
   {
     path: "/",
     name: "TopMenu",
@@ -25,16 +31,47 @@ const routes: Array<RouteRecordRaw> = [
     path: "/login",
     name: "Login",
     component: Login,
+    props: true,
+    beforeEnter: (to, from, next) => {
+      if (
+        store.state.auth.token === null ||
+        store.state.auth.token === undefined
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
   },
   {
     path: "/register",
     name: "Register",
     component: MembershipRegistration,
+    beforeEnter: (to, from, next) => {
+      if (
+        store.state.auth.token === null ||
+        store.state.auth.token === undefined
+      ) {
+        next();
+      } else {
+        next("/");
+      }
+    },
   },
   {
     path: "/adminmenu",
     name: "AdminMenu",
     component: AdminMenu,
+    meta: {
+      requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/registerestimatedamount",
@@ -42,6 +79,13 @@ const routes: Array<RouteRecordRaw> = [
     component: RegisterEstimatedAmount,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
     },
   },
   {
@@ -51,6 +95,13 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       requiresAuth: true,
     },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
+    },
   },
   {
     path: "/editestimatedamount/:id",
@@ -58,6 +109,13 @@ const routes: Array<RouteRecordRaw> = [
     component: EditEstimatedAmount,
     meta: {
       requiresAuth: true,
+    },
+    beforeEnter: (to, from, next) => {
+      if (store.state.auth.isAdmin === 0) {
+        next("/");
+      } else {
+        next();
+      }
     },
   },
   {

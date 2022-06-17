@@ -127,10 +127,7 @@ router.post("/login", async (req, res) => {
           userName: result[0].user_name,
           createdAt: result[0].created_at,
         };
-        const token = jwt.sign(payload, config.jwt.secret, {
-          algorithm: "HS256",
-          expiresIn: "60m",
-        });
+        const token = jwt.sign(payload, config.jwt.secret, config.jwt.options);
         console.log("サーバーのloginの成功時のトークン表示");
         console.log(token);
         res.json({

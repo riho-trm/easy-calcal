@@ -1,14 +1,17 @@
 <template>
-  <input
-    class="input-form"
-    :id="id"
-    :name="name"
-    :type="type"
-    :value="modelValue"
-    :placeholder="placeholder"
-    @input="$emit('update:modelValue', $event.target.value)"
-    @blur="$emit('onBlur', $event.target.value)"
-  />
+  <form>
+    <input
+      class="input-form"
+      :id="id"
+      :name="name"
+      :type="type"
+      :value="modelValue"
+      :placeholder="placeholder"
+      autocomplete="off"
+      @input="$emit('update:modelValue', $event.target.value)"
+      @blur="$emit('onBlur', $event.target.value)"
+    />
+  </form>
 </template>
 
 <script lang="ts">

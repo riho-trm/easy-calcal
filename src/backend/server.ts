@@ -1,7 +1,6 @@
 import express from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import router from "./router";
 import path from "path";
 import mysql from "mysql";
 // historyモードでURL遷移を正しく行うためにインストール
@@ -45,31 +44,6 @@ const connection = mysql.createConnection({
 //   if (err) throw err;
 //   console.log("Connected");
 // });
-
-app.get("/show", (req, res) => {
-  const sql = "select * from saved_nutrients";
-  connection.query(sql, function (err, result, fields) {
-    if (err) throw err;
-    res.json(result);
-  });
-});
-
-app.post("/logintest", async (req, res) => {
-  const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-  const sql =
-    "INSERT INTO users (user_name, mail_address, password, is_admin) VALUES (?,?,?,?)";
-  connection.query(
-    sql,
-    [req.body.userName, req.body.email, hashedPassword, req.body.isadmin],
-    function (err, result, fields) {
-      if (err) throw err;
-      console.log(result);
-      res.json(result);
-    }
-  );
-});
-
-app.use(router);
 
 // Node.jsの標準モジュールpathが提供しているpath.joinメソッドを使って、
 // 実行中のスクリプトのディレクトリ名とpublicというフォルダ名を結合したパスを取得
