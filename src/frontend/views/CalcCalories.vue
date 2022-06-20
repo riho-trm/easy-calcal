@@ -424,6 +424,7 @@ export default defineComponent({
     margin-left: auto;
     margin-right: auto;
     display: flex;
+    min-height: 85vh;
     .input-nutrients {
       width: 50%;
       .nutrients-search-form {
