@@ -483,6 +483,7 @@ export default defineComponent({
           .icon-btn {
             width: 10%;
             font-size: 2rem;
+            cursor: pointer;
           }
           .food-name {
             width: 65%;
