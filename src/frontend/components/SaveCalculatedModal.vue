@@ -13,7 +13,21 @@
           <BaseLabel id="title"
             >タイトル<span class="required">（必須）</span></BaseLabel
           >
-          <BaseInput id="title" name="title" type="text" v-model="title" />
+          <BaseInput
+            id="title"
+            name="title"
+            type="text"
+            v-model="state.title"
+          />
+          <div
+            class="input-errors"
+            v-for="(error, index) in v$.title.$errors"
+            :key="index"
+          >
+            <div class="error-msg" v-if="error.$validator == 'required'">
+              タイトルを入力してください
+            </div>
+          </div>
         </div>
         <div class="memo-input">
           <BaseLabel id="memo">メモ</BaseLabel>
@@ -39,10 +53,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, reactive, ref } from "vue";
 import BaseInput from "./presentational/BaseInput.vue";
 import BaseLabel from "./presentational/BaseLabel.vue";
 import AppProcessingButton from "./container/AppProcessingButton.vue";
+import { useVuelidate } from "@vuelidate/core";
+import { required } from "@vuelidate/validators";
 
 export default defineComponent({
   components: { BaseLabel, BaseInput, AppProcessingButton },
@@ -55,27 +71,42 @@ export default defineComponent({
   },
   emits: ["close", "processing"],
   setup(props, context) {
+    const state = reactive({
+      title: "",
+    });
     const title = ref("");
     const memo = ref("");
     const url = ref("");
 
+    const rules = computed(() => ({
+      title: { required },
+    }));
+    const v$ = useVuelidate(rules, state);
+
     const close = () => {
       context.emit("close");
-      title.value = "";
+      // title.value = "";
+      state.title = "";
       memo.value = "";
       url.value = "";
     };
-    const processing = () => {
-      context.emit("processing", title.value, memo.value, url.value);
-      title.value = "";
+    const processing = async () => {
+      const isFormCorrect = await v$.value.$validate();
+      if (!isFormCorrect) return;
+      // バリデーションエラーじゃない場合にやりたい処理
+      context.emit("processing", state.title, memo.value, url.value);
+      // title.value = "";
+      state.title = "";
       memo.value = "";
       url.value = "";
     };
 
     return {
+      state,
       title,
       memo,
       url,
+      v$,
       close,
       processing,
     };
@@ -137,6 +168,12 @@ export default defineComponent({
       text-align: right;
       color: gray;
       cursor: pointer;
+    }
+    .title-input {
+      .required,
+      .error-msg {
+        color: red;
+      }
     }
     .memo-input {
       textarea {
