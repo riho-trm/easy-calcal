@@ -339,38 +339,46 @@ export default defineComponent({
         const targetId = Number(route.params.id);
         // 対象のmyデータをストアから取得
         const myDataRes: MyData = await store.getters.getMyData(targetId);
-        // defaultMyData初期設定
-        defaultMyData.savedDataId = myDataRes.savedDataId;
-        defaultMyData.title = myDataRes.title;
-        defaultMyData.memo = myDataRes.memo;
-        defaultMyData.url = myDataRes.url;
-        // defaultMyNutrient初期設定
-        for (const data of myDataRes.myNutrients) {
-          const foodName = await store.getters.getNutrientById(data.nutrientId)
-            .food_name;
-          const nutrientRes: Nutrients =
-            await store.getters.calcNutrientsQuanrity(foodName, data.quantity);
-          const estimatedIdRes: Array<number> =
-            await store.getters.getEstimatedIdList(data.nutrientId);
-          defaultMyNutrients.push({
-            savedNutrientsId: data.savedNutrientsId,
-            quantity: data.quantity,
-            estimatedIdList: estimatedIdRes,
-            nutrient: nutrientRes,
-          });
-        }
-        // totalNutrient初期設定
-        for (const totalKey in totalNutrient) {
-          for (const nutrient of defaultMyNutrients) {
-            for (const nutrientKey in nutrient.nutrient) {
-              if (nutrientKey === totalKey) {
-                const plusNutrient =
-                  Math.round(
-                    (totalNutrient[totalKey] += nutrient.nutrient[
-                      nutrientKey
-                    ] as number) * 100
-                  ) / 100;
-                totalNutrient[totalKey] = plusNutrient;
+        if (myDataRes === undefined) {
+          router.push("/notfound");
+        } else {
+          // defaultMyData初期設定
+          defaultMyData.savedDataId = myDataRes.savedDataId;
+          defaultMyData.title = myDataRes.title;
+          defaultMyData.memo = myDataRes.memo;
+          defaultMyData.url = myDataRes.url;
+          // defaultMyNutrient初期設定
+          for (const data of myDataRes.myNutrients) {
+            const foodName = await store.getters.getNutrientById(
+              data.nutrientId
+            ).food_name;
+            const nutrientRes: Nutrients =
+              await store.getters.calcNutrientsQuanrity(
+                foodName,
+                data.quantity
+              );
+            const estimatedIdRes: Array<number> =
+              await store.getters.getEstimatedIdList(data.nutrientId);
+            defaultMyNutrients.push({
+              savedNutrientsId: data.savedNutrientsId,
+              quantity: data.quantity,
+              estimatedIdList: estimatedIdRes,
+              nutrient: nutrientRes,
+            });
+          }
+          // totalNutrient初期設定
+          for (const totalKey in totalNutrient) {
+            for (const nutrient of defaultMyNutrients) {
+              for (const nutrientKey in nutrient.nutrient) {
+                if (nutrientKey === totalKey) {
+                  const plusNutrient =
+                    Math.round(
+                      (totalNutrient[totalKey] += nutrient.nutrient[
+                        nutrientKey
+                      ] as number) * 100
+                    ) / 100;
+                  totalNutrient[totalKey] = plusNutrient;
+                }
               }
             }
           }
