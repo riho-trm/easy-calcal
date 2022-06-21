@@ -7,6 +7,7 @@
       :type="type"
       :value="modelValue"
       :placeholder="placeholder"
+      :disabled="disabled"
       autocomplete="off"
       @input="$emit('update:modelValue', $event.target.value)"
       @blur="$emit('onBlur', $event.target.value)"
@@ -34,6 +35,7 @@ export default defineComponent({
     type: { type: String as PropType<InputAttr>, required: true },
     modelValue: { type: [String, Number] },
     placeholder: { type: String },
+    disabled: { type: Boolean },
   },
   emits: ["update:modelValue", "onBlur"],
 });
