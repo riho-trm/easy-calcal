@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form onsubmit="return false;">
     <input
       class="input-form"
       :id="id"
