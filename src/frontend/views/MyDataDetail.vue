@@ -57,7 +57,7 @@
                   <p class="gram">g</p>
                 </div>
                 <AppProcessingButton
-                  v-if="data.estimatedIdList.length >= 1"
+                  v-if="data.estimatedIdList.length >= 1 && isEdit"
                   class="input-estimated-btn"
                   buttonText="目安量で入力"
                   @processing="
