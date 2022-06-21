@@ -128,7 +128,7 @@ import AppCancelButton from "@/components/container/AppCancelButton.vue";
 import ConfirmationModal from "@/components/ConfirmationModal.vue";
 import { useVuelidate } from "@vuelidate/core";
 import { required } from "@vuelidate/validators";
-import { defineComponent, reactive, ref, computed } from "vue";
+import { defineComponent, reactive, ref, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import SimpleTypeahead from "vue3-simple-typeahead";
 import { useRouter } from "vue-router";
@@ -159,9 +159,12 @@ export default defineComponent({
 
     const created = async () => {
       sugestItems = store.getters.getSugestList;
-      console.log(sugestItems);
     };
     created();
+
+    onMounted(() => {
+      console.log(v$);
+    });
 
     const selectItem = (item: any) => {
       state.nutrientsListFoodName = item;
@@ -169,8 +172,8 @@ export default defineComponent({
 
     const fixedStandardQuantity = (value: string) => {
       const standardQuantityRegex = /^([1-9]\d*|0)(\.\d+)?$/;
-      if (value.length == 0) {
-        console.log("valueが0");
+      console.log(value);
+      if (value == null || value.length == 0) {
         return true;
       } else {
         return standardQuantityRegex.test(value);
@@ -188,6 +191,7 @@ export default defineComponent({
     }));
     const v$ = useVuelidate(rules, state);
     const validateTest = async () => {
+      console.log(v$);
       const isFormCorrect = await v$.value.$validate();
       if (!isFormCorrect) return;
       // バリデーションエラーじゃない場合にやりたい処理
