@@ -207,6 +207,9 @@ export default defineComponent({
           display: flex;
           height: 60px;
           align-items: center;
+          div {
+            cursor: pointer;
+          }
         }
       }
     }
