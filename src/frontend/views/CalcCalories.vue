@@ -424,6 +424,7 @@ export default defineComponent({
     margin-left: auto;
     margin-right: auto;
     display: flex;
+    min-height: 85vh;
     .input-nutrients {
       width: 50%;
       .nutrients-search-form {
@@ -482,6 +483,7 @@ export default defineComponent({
           .icon-btn {
             width: 10%;
             font-size: 2rem;
+            cursor: pointer;
           }
           .food-name {
             width: 65%;
