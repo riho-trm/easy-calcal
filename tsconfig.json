@@ -17,7 +17,8 @@
     "paths": {
       "@/*": ["src/frontend/*"]
     },
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "typeRoots": ["src/frontend/@types"]
   },
   "include": [
     "src/frontend/**/*.ts",

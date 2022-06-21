@@ -1,120 +1,28 @@
 <template>
-  <!-- <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br />
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-        >vue-cli documentation</a
-      >.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
-          target="_blank"
-          rel="noopener"
-          >babel</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router"
-          target="_blank"
-          rel="noopener"
-          >router</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex"
-          target="_blank"
-          rel="noopener"
-          >vuex</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
-          target="_blank"
-          rel="noopener"
-          >eslint</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-typescript"
-          target="_blank"
-          rel="noopener"
-          >typescript</a
-        >
-      </li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
-          >Forum</a
-        >
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
-          >Community Chat</a
-        >
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
-          >Twitter</a
-        >
-      </li>
-      <li>
-        <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
-      </li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-          >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-devtools#vue-devtools"
-          target="_blank"
-          rel="noopener"
-          >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-          >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-          rel="noopener"
-          >awesome-vue</a
-        >
-      </li>
-    </ul>
-  </div> -->
   <div>
-    <h1>{{ data.result }}</h1>
+    <div>
+      <h1>{{ data.result }}</h1>
+    </div>
+    <form>
+      <input type="text" v-model="data.userName" />
+      <button v-on:click.prevent="hello">挨拶</button>
+      <br />
+      <button v-on:click.prevent="test">router test表示</button>
+      <br />
+      <button v-on:click.prevent="logintest">ログインテスト</button>
+    </form>
+    <form>
+      <label for="user-name">ユーザー名</label>
+      <input id="user-name" type="text" v-model="formData.userName" />
+      <label for="email">メールアドレス</label>
+      <input id="email" type="text" v-model="formData.email" />
+      <label for="password">パスワード</label>
+      <input id="password" type="password" v-model="formData.password" />
+      <button v-on:click.prevent="queryTest">登録</button>
+    </form>
+    <div>{{ result }}</div>
+    <fa icon="leaf" />
   </div>
-  <form>
-    <input type="text" v-model="data.userName" />
-    <button v-on:click.prevent="hello">挨拶</button>
-  </form>
 </template>
 
 <script lang="ts">
@@ -129,15 +37,23 @@ export default defineComponent({
   setup() {
     const data = reactive({
       userName: "",
-      result: "",
     });
+    const formData = reactive({
+      userName: "",
+      email: "",
+      password: "",
+    });
+    let result: any;
 
     const test = async () => {
-      const res = await axios.get("/test");
+      const res = await axios.get("http://localhost:3000/login/test");
       console.log(res.data[0].user_name);
-      data.result = res.data[0].user_name;
     };
-    test();
+
+    const show = async () => {
+      const res = await axios.get("http://localhost:3000/show");
+      console.log(res.data);
+    };
 
     const hello = async () => {
       const res = await axios.post("http://localhost:3000/api/hello", {
@@ -145,11 +61,41 @@ export default defineComponent({
       });
       alert(res.data);
     };
+    const json = async () => {
+      const res = await axios.get("http://localhost:3000/api/version");
+      console.log(res.data);
+    };
+    const logintest = async () => {
+      const data = {
+        userName: "長澤まさみ",
+        email: "nagasawamasami@test.com",
+        password: "masamasa1234",
+        isadmin: false,
+      };
+      const res = await axios.post("http://localhost:3000/logintest", data);
+      console.log(res.data);
+    };
+    const queryTest = async () => {
+      console.log("queryTestが押された");
+      const res = await axios.post("http://localhost:3000/login/register", {
+        userName: formData.userName,
+        email: formData.email,
+        password: formData.password,
+        isadmin: false,
+      });
+      console.log(res);
+    };
 
     return {
       data,
+      formData,
+      result,
       hello,
       test,
+      json,
+      show,
+      logintest,
+      queryTest,
     };
   },
 });
