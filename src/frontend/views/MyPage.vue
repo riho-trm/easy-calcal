@@ -42,21 +42,14 @@ export default defineComponent({
       userName: "",
     };
 
-    // const created = async () => {
-    //   const res = store.getters.getUserInformation;
-    //   console.log(res);
-
-    //   userInformation.email = res.email;
-    //   userInformation.userName = res.userName;
-    // };
-    // created();
-    onMounted(() => {
+    const created = async () => {
       const res = store.getters.getUserInformation;
       console.log(res);
 
       userInformation.email = res.email;
       userInformation.userName = res.userName;
-    });
+    };
+    created();
 
     const logout = async () => {
       await store

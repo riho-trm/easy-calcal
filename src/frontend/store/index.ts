@@ -473,7 +473,7 @@ export default createStore({
       // ストレージのキーを指定(変更してなければデフォルトvuex)
       key: "vuex",
       // ストレージの種類を指定
-      storage: window.sessionStorage,
+      // storage: window.sessionStorage,
     }),
   ],
 });
