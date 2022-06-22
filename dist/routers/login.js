@@ -21,10 +21,10 @@ const authenticate_1 = require("../middlewares/authenticate");
 const router = express_1.default.Router();
 router.use(express_1.default.json());
 const connection = mysql_1.default.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "ri-noahn8a",
-    database: "calcCalories",
+    host: "us-cdbr-east-05.cleardb.net",
+    user: "be3a5ee1ceb501",
+    password: "224a4fb1",
+    database: "heroku_05e0dc039ab6269",
 });
 // ハッシュ化のための回数
 const saltRounds = 10;
