@@ -27,7 +27,7 @@
 
 <script lang="ts">
 import AppProcessingButton from "@/components/container/AppProcessingButton.vue";
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 
@@ -42,14 +42,21 @@ export default defineComponent({
       userName: "",
     };
 
-    const created = async () => {
+    // const created = async () => {
+    //   const res = store.getters.getUserInformation;
+    //   console.log(res);
+
+    //   userInformation.email = res.email;
+    //   userInformation.userName = res.userName;
+    // };
+    // created();
+    onMounted(() => {
       const res = store.getters.getUserInformation;
       console.log(res);
 
       userInformation.email = res.email;
       userInformation.userName = res.userName;
-    };
-    created();
+    });
 
     const logout = async () => {
       await store
