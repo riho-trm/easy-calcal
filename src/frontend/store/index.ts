@@ -186,7 +186,7 @@ export default createStore({
           password: data.password,
         };
         const res = await axios.post(
-          "http://localhost:3000/login/login",
+          "https://calc-carlories.herokuapp.com/login/login",
           sendData
         );
         if (res.data.status === "error") {
@@ -212,7 +212,7 @@ export default createStore({
           isadmin: false,
         };
         const res = await axios.post(
-          "http://localhost:3000/login/register",
+          "https://calc-carlories.herokuapp.com/login/register",
           sendData
         );
         return res.data;
@@ -225,7 +225,7 @@ export default createStore({
       console.log(context.state.authHeader);
       try {
         const res = await axios.get(
-          "http://localhost:3000/nutrients/nutrientslist",
+          "https://calc-carlories.herokuapp.com/nutrients/nutrientslist",
           context.state.authHeader
         );
         console.log("storeのgetNutrientsの成功res");
@@ -252,7 +252,7 @@ export default createStore({
 
         try {
           const res = await axios.post(
-            "http://localhost:3000/nutrients/registestimatedquantity",
+            "https://calc-carlories.herokuapp.com/nutrients/registestimatedquantity",
             sendData,
             context.state.authHeader
           );
@@ -265,7 +265,7 @@ export default createStore({
     async getEstimatedQuantity(context) {
       try {
         const res = await axios.get(
-          "http://localhost:3000/nutrients/estimatedquantitylist",
+          "https://calc-carlories.herokuapp.com/nutrients/estimatedquantitylist",
           context.state.authHeader
         );
         console.log("storeのgetEstimatedQuantityの成功res");
@@ -279,7 +279,7 @@ export default createStore({
     async deleteEstimatedQuantity(context, id) {
       try {
         const res = await axios.delete(
-          "http://localhost:3000/nutrients/deleteestimatedquantity",
+          "https://calc-carlories.herokuapp.com/nutrients/deleteestimatedquantity",
           // deleteメソッドでは引数を3つ取れないのでこの形で渡す
           {
             data: { id },
@@ -301,7 +301,7 @@ export default createStore({
     async updateEstimatedQuantity(context, sendData) {
       try {
         const res = await axios.put(
-          "http://localhost:3000/nutrients/updateestimatedquantity",
+          "https://calc-carlories.herokuapp.com/nutrients/updateestimatedquantity",
           sendData,
           context.state.authHeader
         );
@@ -320,7 +320,7 @@ export default createStore({
           url: data.url,
         };
         const res = await axios.post(
-          "http://localhost:3000/save/savemydata",
+          "https://calc-carlories.herokuapp.com/save/savemydata",
           sendData,
           context.state.authHeader
         );
@@ -333,7 +333,7 @@ export default createStore({
     async saveMyNutrients(context, data) {
       try {
         const res = await axios.post(
-          "http://localhost:3000/save/savemynutrients",
+          "https://calc-carlories.herokuapp.com/save/savemynutrients",
           data,
           context.state.authHeader
         );
@@ -346,7 +346,7 @@ export default createStore({
     async getmydata(context) {
       try {
         const savedDataRes = await axios.get(
-          "http://localhost:3000/save/getmydata",
+          "https://calc-carlories.herokuapp.com/save/getmydata",
           {
             params: { userId: this.state.auth.userId },
             headers: {
@@ -359,7 +359,7 @@ export default createStore({
           savedDataId.push(data.id)
         );
         const savedNutrientsRes = await axios.get(
-          "http://localhost:3000/save/getmynutrients",
+          "https://calc-carlories.herokuapp.com/save/getmynutrients",
           {
             params: { savedDataId: savedDataId },
             headers: {
@@ -402,7 +402,7 @@ export default createStore({
     async deleteMyData(context, savedDataId) {
       try {
         const res = await axios.delete(
-          "http://localhost:3000/save/deletemydata",
+          "https://calc-carlories.herokuapp.com/save/deletemydata",
           // deleteメソッドでは引数を3つ取れないのでこの形で渡す
           {
             data: { savedDataId },
@@ -420,7 +420,7 @@ export default createStore({
     async updateSavedData(context, sendData) {
       try {
         const res = await axios.put(
-          "http://localhost:3000/save/updatesaveddata",
+          "https://calc-carlories.herokuapp.com/save/updatesaveddata",
           sendData,
           context.state.authHeader
         );
@@ -433,7 +433,7 @@ export default createStore({
     async updateSavedNutrients(context, sendData) {
       try {
         const res = await axios.put(
-          "http://localhost:3000/save/updatesavednutrients",
+          "https://calc-carlories.herokuapp.com/save/updatesavednutrients",
           sendData,
           context.state.authHeader
         );
@@ -446,7 +446,7 @@ export default createStore({
     async deleteSavedNutrients(context, savedNutrientsId) {
       try {
         const res = await axios.delete(
-          "http://localhost:3000/save/deletesavednutrients",
+          "https://calc-carlories.herokuapp.com/save/deletesavednutrients",
           // deleteメソッドでは引数を3つ取れないのでこの形で渡す
           {
             data: { savedNutrientsId },
@@ -473,7 +473,7 @@ export default createStore({
       // ストレージのキーを指定(変更してなければデフォルトvuex)
       key: "vuex",
       // ストレージの種類を指定
-      storage: window.sessionStorage,
+      // storage: window.sessionStorage,
     }),
   ],
 });
